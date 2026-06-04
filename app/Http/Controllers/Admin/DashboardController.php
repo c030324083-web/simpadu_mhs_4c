@@ -19,21 +19,36 @@ class DashboardController extends Controller
         return view('admin.data_mahasiswa', compact('mahasiswa'));
     }
     
-    public function data_proyeks($nim)
+    public function data_show($nim)
     {
         $mahasiswa = Mahasiswa::find($nim);
         if ($mahasiswa) {
             return view('admin.data_mahasiswa', compact('mahasiswa'));
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data mahasiswa ditemukan',
-                'data' => $mahasiswa
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data mahasiswa tidak ditemukan'
-            ], 404);
         }
+    }
+
+    public function presensi()
+    {
+        return view('admin.presensi');
+    }
+
+    public function penilaian()
+    {
+        return view('admin.penilaian');
+    }
+
+    public function krs()
+    {
+        return view('admin.krs');
+    }
+
+    public function khs()
+    {
+        return view('admin.khs');
+    }
+
+    public function jadwal()
+    {
+        return view('admin.jadwal');
     }
 }

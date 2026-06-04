@@ -172,6 +172,8 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/data_mhs.js') }}"></script>
+    @vite([
+        'resources/css/data_mhs.css'
+    ])
 
 @endsection

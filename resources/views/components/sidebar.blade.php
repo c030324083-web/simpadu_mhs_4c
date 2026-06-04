@@ -2,7 +2,7 @@
 <div class="sidebar">
     <div class="logo">
         <div class="logo-box">
-            <img src="{{ asset('assets/img/logo_poliban.png') }}" alt=>
+            <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="Logo Poliban">
         </div>
         <div class="brand-text">
             <h1>Poliban</h1>
@@ -12,56 +12,56 @@
 
     <ul class="menu">
         <li data-menu="dashboard">
-            <a href="{{ url('/dashboard_admin') }}">
+            <a href="{{ route('dashboard_admin') }}">
                 <i data-lucide="layout-dashboard"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
         <li data-menu="mahasiswa">
-            <a href="{{ url('/data_mahasiswa') }}">
+            <a href="{{ route('data_mahasiswa') }}">
                 <i data-lucide="graduation-cap"></i>
                 <span>Data Mahasiswa</span>
             </a>
         </li>
 
         <li data-menu="presensi">
-            <a href="/pages/presensi.html">
+            <a href="{{ route('presensi') }}">
                 <i data-lucide="clipboard-list"></i>
                 <span>Presensi</span>
             </a>
         </li>
 
         <li data-menu="penilaian">
-            <a href="/pages/penilaian.html">
+            <a href="{{ route('penilaian-admin') }}">
                 <i data-lucide="award"></i>
                 <span>Penilaian</span>
             </a>
         </li>
 
         <li data-menu="krs">
-            <a href="/pages/krs.html">
+            <a href="{{ route('krs-admin') }}">
                 <i data-lucide="file-text"></i>
                 <span>KRS</span>
             </a>
         </li>
 
         <li data-menu="khs">
-            <a href="/pages/khs.html">
+            <a href="{{ route('khs-admin') }}">
                 <i data-lucide="file-text"></i>
                 <span>KHS</span>
             </a>
         </li>
 
         <li data-menu="jadwal">
-            <a href="/pages/jadwal_kuliah.html">
+            <a href="{{ route('jadwal-admin') }}">
                 <i data-lucide="calendar"></i>
                 <span>Jadwal Kuliah</span>
             </a>
         </li>
 
         <li data-menu="pengaturan">
-            <a href="/pages/pengaturan.html">
+            <a href="#">
                 <i data-lucide="settings"></i>
                 <span>Pengaturan</span>
             </a>
@@ -70,7 +70,7 @@
     <ul class="bottom">
 
         <li data-menu="keluar">
-            <a href="/pages/keluar.html">
+            <a href="#">
                 <i data-lucide="log-out"></i>
                 <span>Keluar</span>
             </a>

@@ -2,7 +2,17 @@
 
 @section('title', 'dashboard_mhs')
 
+@section('sidebar')
+@include('components.sidebar_mhs')
+@endsection
+
 @section('content')
+
+@include('components.header', [
+    'title' => 'Dashboard Mahasiswa',
+    'subtitle' => 'Selamat datang di dashboard mahasiswa'
+])
+
 <div class="container">
         <div class="main-content w-full min-h-screen p-8 text-gray-800">
 
@@ -39,7 +49,4 @@
         </div>
     </div>
 
-    <script src="../..{{ asset('js/sidebar.js') }}"></script>
-    <script src="../..{{ asset('js/header.js') }}"></script>
-    <script src="../..{{ asset('js/dashboard.js') }}"></script>
 @endsection

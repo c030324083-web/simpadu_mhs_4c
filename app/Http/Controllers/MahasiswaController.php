@@ -7,13 +7,13 @@ use App\Models\Mahasiswa;
 
 class MahasiswaController extends Controller
 {
-    public function index()
+    public function indexView()
     {
         $mahasiswa = Mahasiswa::all();
         return view('mahasiswa.dashboard_mhs', compact('mahasiswa'));
     }
 
-    public function apiIndex()
+    public function Index()
     {
         $mahasiswa = Mahasiswa::with(['jenisKelamin' => function ($query) {
             $query->select('id_jk', 'nama_jk');
@@ -25,7 +25,7 @@ class MahasiswaController extends Controller
         ]);
     }
 
-    public function apiShow($nim)
+    public function Show($nim)
     {
         $mahasiswa = Mahasiswa::find($nim);
         if ($mahasiswa) {
@@ -42,7 +42,7 @@ class MahasiswaController extends Controller
         }
     }
 
-    public function apiStore(Request $request)
+    public function Store(Request $request)
     {
         $validatedData = $request->validate([
             'nim' => 'required|string|unique:mahasiswa',
@@ -58,7 +58,7 @@ class MahasiswaController extends Controller
         ], 201);
     }
 
-    public function apiUpdate(Request $request, $nim)
+    public function Update(Request $request, $nim)
     {
         $mahasiswa = Mahasiswa::find($nim);
         if ($mahasiswa) {
@@ -81,7 +81,7 @@ class MahasiswaController extends Controller
         }
     }
 
-    public function apiDestroy($nim)
+    public function Destroy($nim)
     {
         $mahasiswa = Mahasiswa::find($nim);
         if ($mahasiswa) {
@@ -96,5 +96,18 @@ class MahasiswaController extends Controller
                 'message' => 'Data mahasiswa tidak ditemukan'
             ], 404);
         }
+    }
+
+    public function searchByName(Request $request)
+    {
+        $keyword = $request->input('nama');
+
+        $mahasiswa = Mahasiswa::where('nama', 'LIKE', "%$keyword%")->first();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Hasil pencarian mahasiswa',
+            'data' => $mahasiswa
+        ]);
     }
 }

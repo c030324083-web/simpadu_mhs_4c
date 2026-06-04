@@ -1,9 +1,381 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'login')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPADU Login</title>
 
-@section('content')
-<div class="container">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    html,
+    body {
+        height: 100%;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+    }
+
+    /* ===== LEFT FULL ===== */
+    .left {
+        width: 58%;
+        height: 100vh;
+        padding: 40px 60px;
+        background: linear-gradient(170deg, #2451E5, #0C1E59);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* BRAND */
+    .brand {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .logo {
+        width: 70px;
+        height: 70px;
+        margin-top: -10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* === FONT SIMPADU === */
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .brand-text h1 {
+        color: white;
+        font-size: 40px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .brand-text h2 {
+        color: #8FC2FF;
+        font-size: 30px;
+        font-weight: 500;
+        margin-top: -3px;
+    }
+
+    .brand-text p {
+        color: #8FC2FF;
+        font-size: 14px;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .accent {
+        width: 60px;
+        height: 4px;
+        background: #67B4FF;
+        border-radius: 20px;
+        margin-top: 10px;
+    }
+
+    /* HERO */
+    .hero {
+        margin-top: 60px;
+    }
+
+    .hero h3 {
+        font-size: 35px;
+        font-weight: 700;
+        line-height: 1.65;
+        letter-spacing: 2px;
+        color: #ffffff;
+    }
+
+    /* CARD */
+    .card {
+        margin-top: 50px;
+        max-width: 570px;
+        height: auto;
+        border-radius: 22px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(20, 19, 19, 0.904);
+    }
+
+    .card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* GLASS BADGE */
+    .badge {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 14px;
+        padding: 10px 14px;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .badge h4 {
+        font-size: 13px;
+    }
+
+    .badge p {
+        font-size: 10px;
+        opacity: 0.9;
+    }
+
+    /* ===== RIGHT ===== */
+    .right {
+        width: 45%;
+        background: #F4F7FB;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        min-height: 100vh;
+    }
+
+    /* LOGO */
+    .top-logo {
+        text-align: center;
+        margin-bottom: 30px;
+        margin-top: 50px;
+    }
+
+    .circle {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #1E40AF, #0D1B49);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 26px;
+        margin: auto;
+    }
+
+    .circle img {
+        width: 80%;
+        height: 80%;
+        object-fit: contain;
+    }
+
+    .top-logo h1 {
+        font-size: 30px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .top-logo p {
+        font-size: 13px;
+        font-weight: 300;
+        color: #6B7280;
+    }
+
+    /* LOGIN BOX */
+    .login-box {
+        width: 360px;
+        min-height: 400px;
+        background: white;
+        padding: 28px;
+        border-radius: 10px;
+        box-shadow:0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .login-box h2 {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 12px;
+        color: #9CA3AF;
+        margin-bottom: 34px;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    label {
+        font-size: 12px;
+        display: block;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        width: 95%;
+        height: 38px;
+        border: none;
+        background: #F3F3F5;
+        border-radius:7px;
+        padding: 0 10px;
+        font-size: 13px;
+        margin-top: 1;
+    }
+
+    .input-box{
+    position: relative;
+    display: flex;
+    align-items: center;
+    }
+
+    .input-box input{
+    width: 100%;
+    height: 45px;
+    border: none;
+    background: #F3F3F5;
+    border-radius: 12px;
+    padding-left: 45px;
+    padding-right: 45px;
+    font-size: 14px;
+    }
+
+    .input-box input:focus{
+    border:2px solid #2563EB;
+    background:white;
+    }
+
+    /* ICON KIRI */
+    .input-box i{
+        position: absolute;
+        left: 15px;
+        color: #9CA3AF;
+        font-size: 18px;
+    }
+
+    /* ICON MATA */
+    .eye-icon{
+        left: auto !important;
+        right: 15px;
+        cursor: pointer;
+        color: #374151;
+    }
+
+    input[type="checkbox"] {
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
+        margin-right: 6px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .row label {
+        display: flex;
+        align-items: center;
+    }
+
+    .row a {
+        font-size: 11px;
+        color: #2563EB;
+        text-decoration: none;
+    }
+
+    button {
+        width: 100%;
+        height: 35px;
+        border: none;
+        border-radius: 5px;
+        background: #2563EB;
+        color: white;
+        font-size: 12px;
+        font-weight: 400;
+        cursor: pointer;
+        transition: 0.2s ease;
+        margin-top: 15px;
+    }
+
+    button:hover {
+        background: #1e4fd1;
+        transform: scale(1.02);
+    }
+
+    button:disabled{
+        opacity:0.7;
+        cursor:not-allowed;
+    }
+
+    .footer {
+        text-align: center;
+        font-size: 11px;
+        color: #9CA3AF;
+        margin-top: 50px;
+    }
+
+    /* ERROR */
+    .error-message{
+        color:#EF4444;
+        font-size:12px;
+        margin-top:12px;
+        text-align:center;
+    }
+
+    /* SUCCESS */
+
+    .success-message{
+        color:#16A34A;
+        font-size:12px;
+        margin-top:12px;
+        text-align:center;
+    }
+    /* RESPONSIVE */
+    @media(max-width:1000px) {
+        .container {
+            flex-direction: column;
+        }
+
+        .left {
+            display: none;
+        }
+
+        .right {
+            width: 100%;
+        }
+    }
+</style>
+
+<body>
+
+    <div class="container">
 
         <!-- LEFT -->
         <div class="left">
@@ -81,17 +453,17 @@
                     </p>
 
                     <!-- FORM -->
-                    <form id="loginForm">
-
+                    <form id="loginForm" method="POST" action="{{ route('login') }}">
+                        @csrf
                         <!-- EMAIL -->
                         <div class="form-group">
-
+                            
                             <label>Email</label>
 
                             <div class="input-box">
 
                                 <i class="fa-regular fa-envelope"></i>
-
+                                
                                 <input
                                     type="email"
                                     id="email"
@@ -174,4 +546,8 @@
         </div>
 
     </div>
-@endsection
+
+    @vite(['resources/js/login.js'])
+
+</body>
+</html>

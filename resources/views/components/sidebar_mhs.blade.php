@@ -2,7 +2,7 @@
 <div class="sidebar">
     <div class="logo">
         <div class="logo-box">
-            <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="">
+            <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="Logo Poliban">
         </div>
         <div class="brand-text">
             <h1>Poliban</h1>
@@ -12,49 +12,49 @@
 
     <ul class="menu">
         <li data-menu="dashboard">
-            <a href="/pages/Mahasiswa/dashboard_mhs.html">
+            <a href="#">
                 <i data-lucide="layout-dashboard"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
         <li data-menu="jadwal">
-            <a href="/pages/Mahasiswa/jadwal_kuliah.html">
+            <a href="#">
                 <i data-lucide="calendar"></i>
                 <span>Jadwal Kuliah</span>
             </a>
         </li>
 
         <li data-menu="presensi">
-            <a href="/pages/Mahasiswa/presensi.html">
+            <a href="#">
                 <i data-lucide="clipboard-list"></i>
                 <span>Presensi</span>
             </a>
         </li>
 
         <li data-menu="penilaian">
-            <a href="/pages/Mahasiswa/penilaian.html">
+            <a href="#">
                 <i data-lucide="award"></i>
                 <span>Penilaian</span>
             </a>
         </li>
 
         <li data-menu="krs">
-            <a href="/pages/Mahasiswa/krs.html">
+            <a href="#">
                 <i data-lucide="file-text"></i>
                 <span>KRS</span>
             </a>
         </li>
 
         <li data-menu="khs">
-            <a href="/pages/Mahasiswa/khs.html">
+            <a href="#">
                 <i data-lucide="file-text"></i>
                 <span>KHS</span>
             </a>
         </li>
 
         <li data-menu="pengaturan">
-            <a href="/pages/Mahasiswa/pengaturan.html">
+            <a href="#">
                 <i data-lucide="settings"></i>
                 <span>Pengaturan</span>
             </a>
@@ -63,7 +63,7 @@
     <ul class="bottom">
 
         <li data-menu="keluar">
-            <a href="/pages/Mahasiswa/keluar.html">
+            <a href="#">
                 <i data-lucide="log-out"></i>
                 <span>Keluar</span>
             </a>
