@@ -6,6 +6,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Mahasiswa\DashboardMhsController;
 
+#Auth
 Route::get('', [AuthController::class, 'page'])->name('page_login');
 Route::post('/auth', [AuthController::class, 'login'])->name('login');
 

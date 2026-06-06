@@ -7,12 +7,6 @@ use App\Models\Mahasiswa;
 
 class MahasiswaController extends Controller
 {
-    public function indexView()
-    {
-        $mahasiswa = Mahasiswa::all();
-        return view('mahasiswa.dashboard_mhs', compact('mahasiswa'));
-    }
-
     public function Index()
     {
         $mahasiswa = Mahasiswa::with(['jenisKelamin' => function ($query) {
@@ -47,6 +41,9 @@ class MahasiswaController extends Controller
         $validatedData = $request->validate([
             'nim' => 'required|string|unique:mahasiswa',
             'nama' => 'required|string',
+            'id_jk' => 'required|exists:jenis_kelamin,id_jk',
+            'id_user' => 'required',
+            'email' => 'required|email',
             // Tambahkan validasi untuk field lainnya sesuai kebutuhan
         ]);
 
@@ -64,6 +61,9 @@ class MahasiswaController extends Controller
         if ($mahasiswa) {
             $validatedData = $request->validate([
                 'nama' => 'sometimes|required|string',
+                'id_jk' => 'sometimes|required|exists:jenis_kelamin,id_jk',
+                'id_user' => 'sometimes|required',
+                'email' => 'sometimes|required|email',
                 // Tambahkan validasi untuk field lainnya sesuai kebutuhan
             ]);
 
@@ -98,15 +98,50 @@ class MahasiswaController extends Controller
         }
     }
 
-    public function searchByName(Request $request)
+    public function searchByName(Request $request, $nama = null)
     {
-        $keyword = $request->input('nama');
+        $keyword = trim($nama ?? $request->query('nama', ''));
 
-        $mahasiswa = Mahasiswa::where('nama', 'LIKE', "%$keyword%")->first();
+        if ($keyword === '') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Parameter nama wajib diisi untuk pencarian'
+            ], 400);
+        }
+
+        $mahasiswa = Mahasiswa::with([
+            'jenisKelamin:id_jk,nama_jk',
+            'statusMahasiswa:id_status_mhs,nama_status'
+        ])->where('nama', 'LIKE', "%{$keyword}%")
+          ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Hasil pencarian mahasiswa',
+            'data' => $mahasiswa
+        ]);
+    }
+
+    public function filterByStatus(Request $request, $id_status_mhs = null)
+    {
+        $status = trim($id_status_mhs ?? $request->query('status', ''));
+
+        if ($status === '') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Parameter status wajib diisi untuk filter'
+            ], 400);
+        }
+
+        $mahasiswa = Mahasiswa::with([
+            'jenisKelamin:id_jk,nama_jk',
+            'statusMahasiswa:id_status_mhs,nama_status'
+        ])->where('id_status_mhs', $status)
+          ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "Daftar mahasiswa dengan status {$status}",
             'data' => $mahasiswa
         ]);
     }

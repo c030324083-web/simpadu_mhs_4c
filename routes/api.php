@@ -6,11 +6,14 @@ use App\Http\Controllers\JenisKelaminController;
 use App\Http\Controllers\StatusMahasiswaController;
 
 Route::get('mahasiswa', [MahasiswaController::class, 'Index']);
+Route::get('mahasiswa/search', [MahasiswaController::class,'searchByName']);
+Route::get('mahasiswa/search/{nama}', [MahasiswaController::class,'searchByName']);
+Route::get('mahasiswa/status', [MahasiswaController::class,'filterByStatus']);
+Route::get('mahasiswa/status/{id_status_mhs}', [MahasiswaController::class,'filterByStatus']);
 Route::get('mahasiswa/{nim}', [MahasiswaController::class, 'Show']);
 Route::post('mahasiswa', [MahasiswaController::class, 'Store']);
 Route::put('mahasiswa/{nim}', [MahasiswaController::class, 'Update']);
 Route::delete('mahasiswa/{nim}', [MahasiswaController::class, 'Destroy']);
-Route::get('mahasiswa/search/{nama}', [MahasiswaController::class,'searchByName']);
 
 Route::get('jenis-kelamin', [JenisKelaminController::class, 'index']);
 Route::get('jenis-kelamin/{id}', [JenisKelaminController::class, 'show']);

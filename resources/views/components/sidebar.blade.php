@@ -26,14 +26,14 @@
         </li>
 
         <li data-menu="presensi">
-            <a href="{{ route('presensi') }}">
+            <a href="{{ route('presensi-admin') }}">
                 <i data-lucide="clipboard-list"></i>
                 <span>Presensi</span>
             </a>
         </li>
 
         <li data-menu="penilaian">
-            <a href="{{ route('penilaian-admin') }}">
+            <a href="#">
                 <i data-lucide="award"></i>
                 <span>Penilaian</span>
             </a>

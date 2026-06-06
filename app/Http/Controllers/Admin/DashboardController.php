@@ -15,16 +15,12 @@ class DashboardController extends Controller
 
     public function data_mahasiswa()
     {
-        $mahasiswa = Mahasiswa::all();
-        return view('admin.data_mahasiswa', compact('mahasiswa'));
+        return view('admin.data_mahasiswa');
     }
     
     public function data_show($nim)
     {
-        $mahasiswa = Mahasiswa::find($nim);
-        if ($mahasiswa) {
-            return view('admin.data_mahasiswa', compact('mahasiswa'));
-        }
+            return view('admin.data_mahasiswa');
     }
 
     public function presensi()

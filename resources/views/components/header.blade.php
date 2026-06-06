@@ -1,8 +1,12 @@
 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4 w-full">
 
     <div>
-        <h1 id="pageTitle" class="text-[26px] font-bold text-gray-900 tracking-tight"></h1>
-        <p id="welcomeText" class="text-gray-500 mt-0.5 text-[14px]"></p>
+        <h1 id="pageTitle" class="text-[26px] font-bold text-gray-900 tracking-tight">
+            {{ $title }}
+        </h1>
+        <p id="welcomeText" class="text-gray-500 mt-0.5 text-[14px]">
+            {{ $subtitle }}
+        </p>
     </div>
 
     <div class="flex items-center space-x-5 justify-end">
