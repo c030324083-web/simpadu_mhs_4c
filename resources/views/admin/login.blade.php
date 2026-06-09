@@ -564,7 +564,7 @@
 
     </div>
 
-    @vite(['resources/js/app.js'])
+    @vite(['resources/js/login.js'])
 
 </body>
 </html>
