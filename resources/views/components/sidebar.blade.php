@@ -33,7 +33,7 @@
         </li>
 
         <li data-menu="penilaian">
-            <a href="#">
+            <a href="{{ route('penilaian-admin') }}">
                 <i data-lucide="award"></i>
                 <span>Penilaian</span>
             </a>
@@ -54,7 +54,7 @@
         </li>
 
         <li data-menu="jadwal">
-            <a href="{{ route('jadwal-admin') }}">
+            <a href="{{ route('jadwal') }}">
                 <i data-lucide="calendar"></i>
                 <span>Jadwal Kuliah</span>
             </a>

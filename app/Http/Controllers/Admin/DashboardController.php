@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
         return view('admin.dashboard_admin');
     }
@@ -18,9 +18,9 @@ class DashboardController extends Controller
         return view('admin.data_mahasiswa');
     }
     
-    public function data_show($nim)
+    public function detail_mahasiswa($nim)
     {
-            return view('admin.data_mahasiswa');
+            return view('admin.detail_mahasiswa');
     }
 
     public function presensi()

@@ -25,14 +25,15 @@
 
     /* ===== MAIN LAYOUT ===== */
     .container {
+        min-height:100vh;
         display: flex;
-        height: 100vh;
+        overflow:hidden;
         width: 100%;
     }
 
     /* ===== LEFT FULL ===== */
     .left {
-        width: 58%;
+        width: 55%;
         height: 100vh;
         padding: 40px 60px;
         background: linear-gradient(170deg, #2451E5, #0C1E59);
@@ -358,18 +359,34 @@
         text-align:center;
     }
     /* RESPONSIVE */
-    @media(max-width:1000px) {
-        .container {
-            flex-direction: column;
-        }
+    @media(max-width:1024px) {
 
         .left {
-            display: none;
+            width: 45%;
         }
 
         .right {
-            width: 100%;
+            width: 55%;
+            padding: 30px;
         }
+    }
+
+    @media (max-width: 768px){
+
+        .container{
+            flex-direction:column;
+        }
+
+        .left{
+            width:100%;
+            min-height:220px;
+        }
+
+        .right{
+            width:100%;
+            padding:24px;
+        }
+
     }
 </style>
 
@@ -383,7 +400,7 @@
             <div class="brand">
 
                 <div class="logo">
-                    <img src="../assets/img/logo_poliban.png" alt="">
+                    <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="">
                 </div>
 
                 <div class="brand-text">
@@ -413,7 +430,7 @@
 
             <div class="card">
 
-                <img src="../assets/img/poliban.jpeg" alt="Poliban">
+                <img src="{{ asset('assets/img/poliban.jpeg') }}" alt="Poliban">
 
                 <div class="badge">
                     <h4>Politeknik Negeri Banjarmasin</h4>

@@ -1,15 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\JenisKelaminController;
-use App\Http\Controllers\StatusMahasiswaController;
+use App\Http\Controllers\Api\MahasiswaController;
+use App\Http\Controllers\Api\JenisKelaminController;
+use App\Http\Controllers\Api\StatusMahasiswaController;
 
 Route::get('mahasiswa', [MahasiswaController::class, 'Index']);
 Route::get('mahasiswa/search', [MahasiswaController::class,'searchByName']);
 Route::get('mahasiswa/search/{nama}', [MahasiswaController::class,'searchByName']);
 Route::get('mahasiswa/status', [MahasiswaController::class,'filterByStatus']);
 Route::get('mahasiswa/status/{id_status_mhs}', [MahasiswaController::class,'filterByStatus']);
+Route::get('mahasiswa/jenis-kelamin', [MahasiswaController::class,'filterByJenisKelamin']);
+Route::get('mahasiswa/jenis-kelamin/{idjk}', [MahasiswaController::class,'filterByJenisKelamin']);
 Route::get('mahasiswa/{nim}', [MahasiswaController::class, 'Show']);
 Route::post('mahasiswa', [MahasiswaController::class, 'Store']);
 Route::put('mahasiswa/{nim}', [MahasiswaController::class, 'Update']);

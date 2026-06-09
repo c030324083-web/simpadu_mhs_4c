@@ -12,42 +12,42 @@
 
     <ul class="menu">
         <li data-menu="dashboard">
-            <a href="#">
+            <a href="{{ route('dashboard_mahasiswa') }}">
                 <i data-lucide="layout-dashboard"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
         <li data-menu="jadwal">
-            <a href="#">
+            <a href="{{ route('jadwal_kuliah') }}">
                 <i data-lucide="calendar"></i>
                 <span>Jadwal Kuliah</span>
             </a>
         </li>
 
         <li data-menu="presensi">
-            <a href="#">
+            <a href="{{ route('presensi') }}">
                 <i data-lucide="clipboard-list"></i>
                 <span>Presensi</span>
             </a>
         </li>
 
         <li data-menu="penilaian">
-            <a href="#">
+            <a href="{{ route('penilaian') }}">
                 <i data-lucide="award"></i>
                 <span>Penilaian</span>
             </a>
         </li>
 
         <li data-menu="krs">
-            <a href="#">
+            <a href="{{ route('krs') }}">
                 <i data-lucide="file-text"></i>
                 <span>KRS</span>
             </a>
         </li>
 
         <li data-menu="khs">
-            <a href="#">
+            <a href="{{ route('khs') }}">
                 <i data-lucide="file-text"></i>
                 <span>KHS</span>
             </a>

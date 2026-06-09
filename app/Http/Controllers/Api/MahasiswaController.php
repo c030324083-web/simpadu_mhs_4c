@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
 
@@ -142,6 +143,30 @@ class MahasiswaController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => "Daftar mahasiswa dengan status {$status}",
+            'data' => $mahasiswa
+        ]);
+    }
+
+    public function filterByJenisKelamin(Request $request, $id_jk = null)
+    {
+        $jenisKelamin = trim($id_jk ?? $request->query('jenis_kelamin', ''));
+
+        if ($jenisKelamin === '') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Parameter jenis_kelamin wajib diisi untuk filter'
+            ], 400);
+        }
+
+        $mahasiswa = Mahasiswa::with([
+            'jenisKelamin:id_jk,nama_jk',
+            'statusMahasiswa:id_status_mhs,nama_status'
+        ])->where('id_jk', $jenisKelamin)
+          ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "Daftar mahasiswa dengan jenis kelamin {$jenisKelamin}",
             'data' => $mahasiswa
         ]);
     }

@@ -15,31 +15,91 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $response = Http::post('https://api-admin-4c.rifkiaja.my.id:9002/api/auth/login', [
-            'email' => $request->email,
-            'password' => $request->password
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
 
+        $response = Http::post(
+            'https://api-admin-4c.rifkiaja.my.id:9002/api/auth/login',
+            [
+                'email' => $request->email,
+                'password' => $request->password,
+            ]
+        );
+
         if (!$response->successful()) {
-            return back()->withErrors([
-                'login' => 'Login gagal. Pastikan email dan password benar.'
-            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Email atau password salah'
+            ], 401);
         }
-        
+
         $data = $response->json();
 
         session([
             'access_token' => $data['data']['access_token'],
+            'refresh_token' => $data['data']['refresh_token'],
             'user' => $data['data']['user'],
-            'roles' => $data['data']['user']['roles'],
+            'roles' => $data['data']['user']['roles'] ?? null,
         ]);
 
-        if ($data['data']['user']['roles'] === 'admin_mahasiswa') {
+        $role = session('roles');
+
+        if ($role === 'admin_mahasiswa') {
             return redirect()->route('dashboard_admin');
         }
 
-        if ($data['data']['user']['roles'] === 'mahasiswa') {
+        if ($role === 'mahasiswa') {
             return redirect()->route('dashboard_mahasiswa');
         }
+
+        return redirect('/');
+    }
+
+    public function refreshToken()
+    {
+        $refreshToken = session('refresh_token');
+
+        if (!$refreshToken) {
+            return false;
+        }
+
+        $response = Http::post(
+            'https://api-admin-4c.rifkiaja.my.id:9002/api/auth/refresh',
+            [
+                'refresh_token' => $refreshToken
+            ]
+        );
+
+        if (!$response->successful()) {
+            session()->flush();
+
+            return false;
+        }
+
+        $data = $response->json();
+
+        session([
+            'access_token' => $data['data']['access_token'],
+            'refresh_token' => $data['data']['refresh_token']
+        ]);
+
+        return true;
+    }
+
+    public function logout()
+    {
+        $token = session('access_token');
+
+        if ($token) {
+            Http::withToken($token)
+                ->post('https://api-admin-4c.rifkiaja.my.id:9002/api/auth/logout');
+        }
+
+        session()->invalidate();
+        session()->regenerateToken();
+
+        return redirect()->route('login_page');
     }
 }
