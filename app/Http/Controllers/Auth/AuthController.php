@@ -49,7 +49,6 @@ class AuthController extends Controller
         if (in_array('admin_mahasiswa', (array) $role)) {
             return redirect()->route('dashboard_admin');
         }
-        dd($role);
 
         if (in_array('mahasiswa', (array) $role)) {
             return redirect()->route('dashboard_mahasiswa');
