@@ -12,7 +12,7 @@ class StatusMahasiswaController extends Controller
     {
         $statusMahasiswa = StatusMahasiswa::all();
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Daftar status mahasiswa berhasil diambil',
             'data' => $statusMahasiswa
         ]);
@@ -23,12 +23,12 @@ class StatusMahasiswaController extends Controller
         $statusMahasiswa = StatusMahasiswa::find($id);
         if (!$statusMahasiswa) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Status mahasiswa tidak ditemukan'
             ], 404);
         }
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Status mahasiswa berhasil diambil',
             'data' => $statusMahasiswa
         ]);

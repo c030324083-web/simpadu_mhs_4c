@@ -46,15 +46,15 @@ class AuthController extends Controller
 
         $role = session('roles');
 
-        if ($role === 'admin_mahasiswa') {
+        if (in_array('admin_mahasiswa', (array) $role)) {
             return redirect()->route('dashboard_admin');
         }
+        dd($role);
 
-        if ($role === 'mahasiswa') {
+        if (in_array('mahasiswa', (array) $role)) {
             return redirect()->route('dashboard_mahasiswa');
         }
-
-        return redirect('/');
+        
     }
 
     public function refreshToken()

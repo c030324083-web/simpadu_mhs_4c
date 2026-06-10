@@ -12,7 +12,7 @@ class JenisKelaminController extends Controller
     {
         $jenisKelamin = JenisKelamin::all();
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Daftar jenis kelamin berhasil diambil',
             'data' => $jenisKelamin
         ]);
@@ -23,12 +23,12 @@ class JenisKelaminController extends Controller
         $jenisKelamin = JenisKelamin::find($id);
         if (!$jenisKelamin) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Jenis kelamin tidak ditemukan'
             ], 404);
         }
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Jenis kelamin berhasil diambil',
             'data' => $jenisKelamin
         ]);

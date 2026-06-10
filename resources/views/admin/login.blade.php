@@ -400,7 +400,7 @@
             <div class="brand">
 
                 <div class="logo">
-                    <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="">
+                    <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="Poliban">
                 </div>
 
                 <div class="brand-text">
@@ -450,7 +450,7 @@
                 <div class="top-logo">
 
                     <div class="circle">
-                        <img src="../assets/img/logo_poliban.png" alt="">
+                        <img src="{{ asset('assets/img/logo_poliban.png') }}" alt="Poliban">
                     </div>
 
                     <h1>POLIBAN</h1>
@@ -564,7 +564,7 @@
 
     </div>
 
-    @vite(['resources/js/login.js'])
+    @vite('resources/js/login.js')
 
 </body>
 </html>

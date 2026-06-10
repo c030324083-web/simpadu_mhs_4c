@@ -14,7 +14,7 @@ class MahasiswaController extends Controller
             $query->select('id_jk', 'nama_jk');
         }])->get(['nim', 'nama', 'id_jk']);
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Daftar mahasiswa berhasil diambil',
             'data' => $mahasiswa
         ]);
@@ -25,13 +25,13 @@ class MahasiswaController extends Controller
         $mahasiswa = Mahasiswa::find($nim);
         if ($mahasiswa) {
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Data mahasiswa ditemukan',
                 'data' => $mahasiswa
             ]);
         } else {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Data mahasiswa tidak ditemukan'
             ], 404);
         }
@@ -50,7 +50,7 @@ class MahasiswaController extends Controller
 
         $mahasiswa = Mahasiswa::create($validatedData);
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Mahasiswa berhasil ditambahkan',
             'data' => $mahasiswa
         ], 201);
@@ -70,13 +70,13 @@ class MahasiswaController extends Controller
 
             $mahasiswa->update($validatedData);
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Mahasiswa berhasil diperbarui',
                 'data' => $mahasiswa
             ]);
         } else {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Data mahasiswa tidak ditemukan'
             ], 404);
         }
@@ -88,12 +88,12 @@ class MahasiswaController extends Controller
         if ($mahasiswa) {
             $mahasiswa->delete();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Mahasiswa berhasil dihapus'
             ]);
         } else {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Data mahasiswa tidak ditemukan'
             ], 404);
         }
@@ -105,7 +105,7 @@ class MahasiswaController extends Controller
 
         if ($keyword === '') {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Parameter nama wajib diisi untuk pencarian'
             ], 400);
         }
@@ -117,7 +117,7 @@ class MahasiswaController extends Controller
           ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Hasil pencarian mahasiswa',
             'data' => $mahasiswa
         ]);
@@ -129,7 +129,7 @@ class MahasiswaController extends Controller
 
         if ($status === '') {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Parameter status wajib diisi untuk filter'
             ], 400);
         }
@@ -141,7 +141,7 @@ class MahasiswaController extends Controller
           ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => "Daftar mahasiswa dengan status {$status}",
             'data' => $mahasiswa
         ]);
@@ -153,7 +153,7 @@ class MahasiswaController extends Controller
 
         if ($jenisKelamin === '') {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Parameter jenis_kelamin wajib diisi untuk filter'
             ], 400);
         }
@@ -165,7 +165,7 @@ class MahasiswaController extends Controller
           ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => "Daftar mahasiswa dengan jenis kelamin {$jenisKelamin}",
             'data' => $mahasiswa
         ]);

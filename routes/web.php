@@ -8,7 +8,7 @@ use App\Http\Controllers\Mahasiswa\DashboardMhsController;
 
 #Auth
 Route::get('', [AuthController::class, 'page'])->name('login_page');
-Route::post('/auth', [AuthController::class, 'login'])->name('login');
+Route::post('/', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('check.login')->group(function () {
 
