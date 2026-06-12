@@ -24,9 +24,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -40,7 +39,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -75,9 +74,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -88,7 +86,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -103,9 +101,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -113,7 +110,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -126,6 +123,8 @@
         "/mahasiswa": {
             "get": {
                 "operationId": "mahasiswa.index",
+                "description": "Endpoint ini digunakan untuk mengambil seluruh data mahasiswa.",
+                "summary": "Menampilkan daftar mahasiswa",
                 "tags": [
                     "Mahasiswa"
                 ],
@@ -137,9 +136,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -153,7 +151,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -211,9 +209,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -224,7 +221,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -238,74 +235,9 @@
                 }
             }
         },
-        "/mahasiswa/search": {
-            "get": {
-                "operationId": "mahasiswa.searchByName_0",
-                "tags": [
-                    "Mahasiswa"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Hasil pencarian mahasiswa"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Mahasiswa"
-                                            }
-                                        }
-                                    },
-                                    "required": [
-                                        "status",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Parameter nama wajib diisi untuk pencarian"
-                                        }
-                                    },
-                                    "required": [
-                                        "status",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/mahasiswa/search/{nama}": {
             "get": {
-                "operationId": "mahasiswa.searchByName_0",
+                "operationId": "mahasiswa.searchByName",
                 "tags": [
                     "Mahasiswa"
                 ],
@@ -328,9 +260,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -344,7 +275,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -359,9 +290,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -369,71 +299,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/mahasiswa/status": {
-            "get": {
-                "operationId": "mahasiswa.filterByStatus_0",
-                "tags": [
-                    "Mahasiswa"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Mahasiswa"
-                                            }
-                                        }
-                                    },
-                                    "required": [
-                                        "status",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Parameter status wajib diisi untuk filter"
-                                        }
-                                    },
-                                    "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -445,7 +311,7 @@
         },
         "/mahasiswa/status/{id_status_mhs}": {
             "get": {
-                "operationId": "mahasiswa.filterByStatus_0",
+                "operationId": "mahasiswa.filterByStatus",
                 "tags": [
                     "Mahasiswa"
                 ],
@@ -468,9 +334,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string"
@@ -483,7 +348,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -498,9 +363,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -508,71 +372,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/mahasiswa/jenis-kelamin": {
-            "get": {
-                "operationId": "mahasiswa.filterByJenisKelamin_0",
-                "tags": [
-                    "Mahasiswa"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Mahasiswa"
-                                            }
-                                        }
-                                    },
-                                    "required": [
-                                        "status",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Parameter jenis_kelamin wajib diisi untuk filter"
-                                        }
-                                    },
-                                    "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -584,7 +384,7 @@
         },
         "/mahasiswa/jenis-kelamin/{id_jk}": {
             "get": {
-                "operationId": "mahasiswa.filterByJenisKelamin_0",
+                "operationId": "mahasiswa.filterByJenisKelamin",
                 "tags": [
                     "Mahasiswa"
                 ],
@@ -607,9 +407,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string"
@@ -622,7 +421,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -637,9 +436,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -647,7 +445,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -681,9 +479,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -691,7 +488,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -705,9 +502,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -718,7 +514,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -775,9 +571,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -785,7 +580,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -799,9 +594,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -812,7 +606,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -848,9 +642,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -858,7 +651,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -872,9 +665,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -882,7 +674,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
@@ -906,9 +698,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -922,7 +713,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -957,9 +748,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "success"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -970,7 +760,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message",
                                         "data"
                                     ]
@@ -985,9 +775,8 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "const": "error"
+                                        "success": {
+                                            "type": "boolean"
                                         },
                                         "message": {
                                             "type": "string",
@@ -995,7 +784,7 @@
                                         }
                                     },
                                     "required": [
-                                        "status",
+                                        "success",
                                         "message"
                                     ]
                                 }
