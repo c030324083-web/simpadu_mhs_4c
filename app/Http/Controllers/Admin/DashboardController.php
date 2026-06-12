@@ -10,13 +10,11 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $mahasiswa = route('list_mahasiswa');
         return view('admin.dashboard_admin');
     }
 
     public function data_mahasiswa() 
     {
-        $mahasiswa = Mahasiswa::all();
         return view('admin.data_mahasiswa');
     }
     
