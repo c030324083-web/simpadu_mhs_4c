@@ -1,10 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Mahasiswa\DashboardMhsController;
+
+Route::get('/clear-cache-serve', function(){Artisan::call('optimize:clear');return 'Cache server berhasil dibersihkan!';});
 
 #Auth
 Route::get('/', [AuthController::class, 'page'])->name('login_page');
