@@ -8,6 +8,11 @@ use App\Models\Mahasiswa;
 
 class MahasiswaController extends Controller
 {
+    /**
+    * Menampilkan daftar mahasiswa.
+    *
+    * Endpoint ini digunakan untuk mengambil seluruh data mahasiswa.
+    */
     public function Index()
     {
         $mahasiswa = Mahasiswa::with(['jenisKelamin' => function ($query) {
