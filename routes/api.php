@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\JenisKelaminController;
 use App\Http\Controllers\Api\StatusMahasiswaController;
+use App\Http\Controllers\Auth\AuthController;
+
+Route::get('auth/login', [AuthController::class, 'login']);
+Route::get('auth/refresh', [AuthController::class, 'refreshToken']);
+Route::get('auth/logout', [AuthController::class, 'logout']);
 
 Route::get('mahasiswa', [MahasiswaController::class, 'Index']);
 Route::get('mahasiswa/search/{nama}', [MahasiswaController::class,'searchByName']);
