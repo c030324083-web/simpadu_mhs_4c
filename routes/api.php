@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\JenisKelaminController;
 use App\Http\Controllers\Api\StatusMahasiswaController;
-use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Api\AuthController;
 
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/refresh', [AuthController::class, 'refreshToken']);
