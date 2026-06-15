@@ -55,11 +55,28 @@ class ApiMahasiswaController extends Controller
     public function Store(Request $request)
     {
         $validatedData = $request->validate([
-            'nim' => 'required|string|unique:mahasiswa',
-            'nama' => 'required|string',
-            'id_jk' => 'required|exists:jenis_kelamin,id_jk',
-            'id_user' => 'required',
-            'email' => 'required|email',
+            'NIM'               => 'required|string|unique:mahasiswa,NIM',
+            'NAMA'              => 'required|string',
+            'EMAIL'             => 'required|email',
+            'NO_HP'             => 'nullable',
+            'ID_JK'             => 'required|exists:jenis_kelamin,id_jk', // sesuaikan nama kolom id di tabel jenis_kelamin
+            'ID_USER'           => 'required|integer',
+            'ID_AGAMA'          => 'nullable',
+            'ID_STATUS_MHS'     => 'nullable',
+            'ID_PRODI'          => 'nullable',
+            'TANGGAL_LAHIR'     => 'nullable|date',
+            'ALAMAT'            => 'nullable',
+            'ID_KABUPATEN'      => 'nullable',
+            'ID_PROVINSI'       => 'nullable',
+            'ID_UKT_KATEGORI'   => 'nullable',
+            'NAMA_AYAH'         => 'nullable',
+            'ID_PEKERJAAN_AYAH' => 'nullable',
+            'PENGHASILAN_AYAH'  => 'nullable',
+            'SLIP_GAJI_AYAH'    => 'nullable',
+            'NAMA_IBU'          => 'nullable',
+            'ID_PEKERJAAN_IBU'  => 'nullable',
+            'PENGHASILAN_IBU'   => 'nullable',
+            'SLIP_GAJI_IBU'     => 'nullable',
             // Tambahkan validasi untuk field lainnya sesuai kebutuhan
         ]);
 
@@ -76,11 +93,27 @@ class ApiMahasiswaController extends Controller
         $mahasiswa = Mahasiswa::find($nim);
         if ($mahasiswa) {
             $validatedData = $request->validate([
-                'nama' => 'sometimes|required|string',
-                'id_jk' => 'sometimes|required|exists:jenis_kelamin,id_jk',
-                'ID_STATUS_MHS' => 'sometimes|exists:status_mahasiswa, id_status_mhs',
-                'id_user' => 'sometimes|required',
-                'email' => 'sometimes|required|email',
+                'NAMA'              => 'nullable|string',
+                'EMAIL'             => 'nullable|email',
+                'NO_HP'             => 'nullable',
+                'ID_JK'             => 'nullable|exists:jenis_kelamin,id_jk', // sesuaikan nama kolom id di tabel jenis_kelamin
+                'ID_USER'           => 'nullable|integer',
+                'ID_AGAMA'          => 'nullable',
+                'ID_STATUS_MHS'     => 'nullable',
+                'ID_PRODI'          => 'nullable',
+                'TANGGAL_LAHIR'     => 'nullable|date',
+                'ALAMAT'            => 'nullable',
+                'ID_KABUPATEN'      => 'nullable',
+                'ID_PROVINSI'       => 'nullable',
+                'ID_UKT_KATEGORI'   => 'nullable',
+                'NAMA_AYAH'         => 'nullable',
+                'ID_PEKERJAAN_AYAH' => 'nullable',
+                'PENGHASILAN_AYAH'  => 'nullable',
+                'SLIP_GAJI_AYAH'    => 'nullable',
+                'NAMA_IBU'          => 'nullable',
+                'ID_PEKERJAAN_IBU'  => 'nullable',
+                'PENGHASILAN_IBU'   => 'nullable',
+                'SLIP_GAJI_IBU'     => 'nullable',
                 // Tambahkan validasi untuk field lainnya sesuai kebutuhan
             ]);
 
@@ -152,7 +185,7 @@ class ApiMahasiswaController extends Controller
 
         $mahasiswa = Mahasiswa::with([
             'jenisKelamin:id_jk,nama_jk',
-            'statusMahasiswa:id_status_mhs,nama_status'
+            'statusMahasiswa:id_status_mhs,nama_status_mhs'
         ])->where('id_status_mhs', $status)
           ->get(['nim', 'nama', 'id_jk', 'id_status_mhs', 'email']);
 
