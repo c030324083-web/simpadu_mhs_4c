@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update Data Mahasiswa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../css/sidebar.css">
+<link rel="stylesheet" href="../../css/data_mhs.css">
+
+<script>
+    tailwind.config = {
+        corePlugins: { preflight: false }
+    }
+</script>
+
+<style>
+.animate-fade-in {
+    opacity: 0; 
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+    
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+</head>
+
+<body class="page-edit" 
+    data-role="mhs"
+    data-page-title="Data Mahasiswa"
+    data-greeting="Update Data Mahasiswa"
+    class="bg-[#fdfdfd] font-sans m-0 p-0 text-slate-800 antialiased">
+
+<div class="container">
+<div id="sidebar"></div>
+
+<div class="main animate-fade-in">
+
+<div id="header"></div>
+
+<div class="flex justify-end gap-3 mb-4 mt-2 px-1">
+    <button id="btnSimpanTop" class="flex items-center gap-2 bg-[#28C76F] hover:bg-[#20a65b] text-white px-5 py-2.5 rounded-lg font-medium transition-colors border-none cursor-pointer shadow-sm">
+        <i data-lucide="save" class="w-4 h-4"></i> Simpan
+    </button>
+    <button onclick="goBack()" class="flex items-center gap-2 bg-[#F28B64] hover:bg-[#E07954] text-white px-5 py-2.5 rounded-lg font-medium transition-colors border-none cursor-pointer shadow-sm">
+        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Batal
+    </button>
+</div>
+<div class="card">
+<div class="profile">
+
+    <div class="profile-left">
+        <div class="avatar-lg">
+            <i data-lucide="user"></i>
+        </div>
+
+        <div class="user-info">
+            <h2 id="head-nama">-</h2>
+            <p id="head-nim">-</p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="profile-middle">
+        <div class="info-group">
+            <span>Program Studi</span>
+            <strong id="head-prodi">-</strong>
+        </div>
+
+        <div class="info-group">
+            <span>Kelas</span>
+            <strong id="head-kelas">-</strong>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="profile-right">
+        <div class="info-group">
+            <span>Tahun Akademik</span>
+            <strong id="head-tahun">-</strong>
+        </div>
+
+        <div class="info-group">
+            <span>Status</span>
+            <div class="status-badge" id="head-status">-</div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<div class="card">
+<div class="tabs">
+    <div class="tab active" data-tab="identitas" onclick="showTab('identitas')">
+        <i data-lucide="user"></i> Identitas
+    </div>
+
+    <div class="tab" data-tab="domisili" onclick="showTab('domisili')">
+        <i data-lucide="map-pin"></i> Domisili
+    </div>
+
+    <div class="tab" data-tab="orangtua" onclick="showTab('orangtua')">
+        <i data-lucide="users"></i> Orang Tua/Wali
+    </div>
+
+    <div class="tab" data-tab="sekolah" onclick="showTab('sekolah')">
+        <i data-lucide="graduation-cap"></i> Sekolah
+    </div>
+</div>
+
+<div id="identitas" class="tab-content active">
+
+<div class="detail-title">Identitas Mahasiswa</div>
+
+<div class="form-grid-2">
+
+<div class="form-column">
+    
+    <div class="form-group">
+        <label>NIM <span>*</span></label>
+        <input type="text" id="edit-nim" value="" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>Nama Lengkap <span>*</span></label>
+        <input type="text" id="edit-nama" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Email <span>*</span></label>
+        <input type="text" id="edit-email" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Status Mahasiswa <span>*</span></label>
+        <select id="edit-status">
+            <option value="">Pilih Status...</option>
+            <option value="Aktif">Aktif</option>
+            <option value="Nonaktif">Nonaktif</option>
+        </select>
+    </div>
+
+</div>
+
+<div class="form-column">
+
+    <div class="form-group">
+        <label>Tanggal Lahir <span>*</span></label>
+        <input type="date" id="edit-tgl" value="">
+    </div>
+
+    <div class="form-group">
+        <label>No. Hp <span>*</span></label>
+        <input type="text" id="edit-hp" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Jenis Kelamin <span>*</span></label>
+        <select id="edit-jk">
+            <option value="">Pilih Jenis Kelamin...</option>
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Agama <span>*</span></label>
+        <select id="edit-agama">
+            <option value="">Pilih Agama...</option>
+            <option value="Islam">Islam</option>
+            <option value="Kristen">Kristen</option>
+            <option value="Katolik">Katolik</option>
+            <option value="Hindu">Hindu</option>
+            <option value="Buddha">Buddha</option>
+            <option value="Khonghucu">Khonghucu</option>
+        </select>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<div id="domisili" class="tab-content">
+
+<div class="detail-title">Domisili</div>
+
+<div class="form-grid">
+
+<div class="form-group alamat">
+    <label>Alamat <span>*</span></label>
+    <input type="text" id="edit-alamat" value="">
+</div>
+
+<div class="form-row-3">
+    <div class="form-group">
+        <label>Provinsi <span>*</span></label>
+        <input type="text" id="edit-provinsi" value="">
+    </div>
+    <div class="form-group">
+        <label>Kabupaten/Kota <span>*</span></label>
+        <input type="text" id="edit-kota" value="">
+    </div>
+    <div class="form-group">
+        <label>Kode Pos <span>*</span></label>
+        <input type="text" id="edit-kodepos" value="">
+    </div>
+</div>
+
+<div class="form-row-3">
+    <div class="form-group">
+        <label>Kecamatan <span>*</span></label>
+        <input type="text" id="edit-kecamatan" value="">
+    </div>
+    <div class="form-group">
+        <label>Kelurahan/Desa <span>*</span></label>
+        <input type="text" id="edit-kelurahan" value="">
+    </div>
+</div>
+</div>
+</div>
+
+<div id="orangtua" class="tab-content">
+
+<div class="detail-title">Orang Tua/Wali</div>
+
+<div class="form-row-3">
+
+<div class="form-column">
+    <div class="form-group">
+        <label>Nama Ayah <span>*</span></label>
+        <input type="text" id="edit-nama-ayah" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Pekerjaan Ayah <span>*</span></label>
+        <select id="edit-kerja-ayah">
+            <option value="">Pilih Pekerjaan...</option>
+            <option value="Karyawan Swasta">Karyawan Swasta</option>
+            <option value="PNS">PNS</option>
+            <option value="Wiraswasta">Wiraswasta</option>
+            <option value="Tidak Bekerja">Tidak Bekerja</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>No. Hp Ayah <span>*</span></label>
+        <input type="text" id="edit-hp-ayah" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Penghasilan Ayah <span>*</span></label>
+        <select id="edit-gaji-ayah">
+            <option value="">Pilih Penghasilan...</option>
+            <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
+            <option value="Rp 1.000.000 - Rp 3.000.000">Rp 1.000.000 - Rp 3.000.000</option>
+            <option value="Rp 3.000.000 - Rp 6.000.000">Rp 3.000.000 - Rp 6.000.000</option>
+            <option value="Rp 6.000.000-Rp 8.000.000">Rp 6.000.000-Rp 8.000.000</option>
+            <option value="> Rp 8.000.000">&gt; Rp 8.000.000</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-column">
+    <div class="form-group">
+        <label>Nama Ibu <span>*</span></label>
+        <input type="text" id="edit-nama-ibu" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Pekerjaan Ibu <span>*</span></label>
+        <select id="edit-kerja-ibu">
+            <option value="">Pilih Pekerjaan...</option>
+            <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+            <option value="Karyawan Swasta">Karyawan Swasta</option>
+            <option value="PNS">PNS</option>
+            <option value="Wiraswasta">Wiraswasta</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>No. Hp Ibu <span>*</span></label>
+        <input type="text" id="edit-hp-ibu" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Penghasilan Ibu <span>*</span></label>
+        <select id="edit-gaji-ibu">
+            <option value="">Pilih Penghasilan...</option>
+            <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
+            <option value="Rp 1.000.000 - Rp 3.000.000">Rp 1.000.000 - Rp 3.000.000</option>
+            <option value="Rp 3.000.000 - Rp 6.000.000">Rp 3.000.000 - Rp 6.000.000</option>
+            <option value="> Rp 6.000.000">&gt; Rp 6.000.000</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-column">
+    <div class="form-group">
+        <label>Nama Wali</label>
+        <input type="text" id="edit-nama-wali" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Pekerjaan Wali</label>
+        <select id="edit-kerja-wali">
+            <option value="">Pilih Pekerjaan...</option>
+            <option value="Karyawan Swasta">Karyawan Swasta</option>
+            <option value="PNS">PNS</option>
+            <option value="Wiraswasta">Wiraswasta</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>No. Hp Wali</label>
+        <input type="text" id="edit-hp-wali" value="">
+    </div>
+
+    <div class="form-group">
+        <label>Penghasilan Wali</label>
+        <select id="edit-gaji-wali">
+            <option value="">Pilih Penghasilan...</option>
+            <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
+            <option value="Rp 1.000.000 - Rp 3.000.000">Rp 1.000.000 - Rp 3.000.000</option>
+            <option value="> Rp 3.000.000">&gt; Rp 3.000.000</option>
+        </select>
+    </div>
+</div>
+
+</div>
+</div>
+
+<div id="sekolah" class="tab-content">
+
+<div class="detail-title">Sekolah</div>
+
+<div class="form-grid-2">
+
+<div class="form-column">
+
+    <div class="form-group">
+        <label>Jenis Sekolah <span>*</span></label>
+        <select id="edit-jenis-sekolah">
+            <option value="">Pilih Jenis...</option>
+            <option value="SMA">SMA</option>
+            <option value="SMK">SMK</option>
+            <option value="MA">MA</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Sekolah <span>*</span></label>
+        <input type="text" id="edit-sekolah" value="">
+    </div>
+</div>
+
+<div class="form-column">
+
+    <div class="form-group">
+        <label>Kota Sekolah <span>*</span></label>
+        <input type="text" id="edit-kota-sekolah" value="">
+    </div>
+</div>
+
+
+<script>
+function showTab(tabId){
+    document.querySelectorAll('.tab-content').forEach(el=>{
+        el.classList.remove('active');
+    });
+    document.querySelectorAll('.tab').forEach(el=>{
+        el.classList.remove('active');
+    });
+    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.tab').forEach(tab=>{
+        if(tab.dataset.tab === tabId){
+            tab.classList.add('active');
+        }
+    });
+}
+</script>
+
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/header.js"></script>
+<script src="../../js/data_mhs.js"></script>
+<script src="../../js/logout.js"></script>
+
+</body>
+</html>

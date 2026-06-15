@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi Kuliah Mahasiswa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>   
+    <link rel="stylesheet" href="../../css/sidebar.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            light: '#F4F8FD', 
+                            border: '#E8F1FA',
+                        }
+                    }
+                }
+            },
+            corePlugins: { preflight: false }
+        }
+    </script>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container { display: flex; height: 100vh; overflow: hidden; margin: 0; padding: 0; }
+        #sidebar { width: 280px; flex-shrink: 0; height: 100vh; overflow-y: auto; }
+        .main-content { flex-grow: 1; height: 100vh; overflow-y: auto; padding: 1.5rem 2rem; margin-left: -45px; }
+    </style>
+</head>
+
+<body data-role="mhs" 
+      data-page-title="Presensi Mahasiswa" 
+      data-greeting="Isi Kehadiran Matakuliah" 
+      class="bg-[#fcfdfd] font-sans m-0 p-0 text-slate-800 antialiased">
+
+    <div class="container">
+        <div id="sidebar"></div>
+
+        <div class="main-content w-full min-h-screen text-gray-800">
+            <div id="header"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-1 animate-fade-in">
+                
+                <div class="lg:col-span-8 xl:col-span-8 space-y-6">
+                    
+                    <div class="bg-[#0B4199] rounded-2xl p-6 lg:p-7 text-white shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 translate-x-6 -translate-y-6 opacity-10">
+                            <i data-lucide="globe" class="w-44 h-44"></i>
+                        </div>
+                        <div class="flex gap-2 mb-3">
+                            <span id="meta-kelas" class="bg-white/20 text-xs px-3 py-1 rounded-full font-medium text-white">TI-4C</span>
+                            <span id="meta-sesi" class="bg-white/20 text-xs px-3 py-1 rounded-full font-medium text-white">Sesi 15</span>
+                        </div>
+                        <h2 id="meta-matkul" class="text-xl lg:text-2xl font-bold tracking-tight mb-4 text-white m-0">Pemrograman Web</h2>
+                        
+                        <div class="flex flex-wrap gap-5 text-[13px] text-blue-100">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4 text-blue-200"></i>
+                                <span id="meta-hari-tanggal" class="text-white">Rabu, 13 Mei 2026</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-blue-200"></i>
+                                <span id="meta-jam-durasi" class="text-white">08:00 - 10:00 WIB</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="building" class="w-4 h-4 text-blue-200"></i>
+                                <span id="meta-ruangan" class="text-white">Lab Rekayasa 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="view-input-presensi" class="bg-white border border-solid border-gray-100 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] p-6 lg:p-7 hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-[16px] font-semibold text-gray-900 m-0">Pilih Status Kehadiran</h3>
+                                <p class="text-[12px] text-gray-500 m-0 mt-1">Silakan pilih salah satu opsi di bawah ini dengan jujur.</p>
+                            </div>
+                            <div class="text-right hidden">
+                                <span class="text-[10px] font-semibold text-gray-400 block uppercase tracking-wider">Sisa Waktu</span>
+                                <span id="countdown-timer" class="text-base font-bold text-red-500">45:12</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                            <div data-status="Hadir" class="status-card border border-solid border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-all duration-200">
+                                <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+                                    <i data-lucide="check" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[14px] font-semibold text-gray-800">Hadir</span>
+                                <span class="text-[10px] text-gray-400 tracking-wider uppercase font-medium">Present</span>
+                            </div>
+                            <div data-status="Izin" class="status-card border border-solid border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-all duration-200">
+                                <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+                                    <i data-lucide="mail" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[14px] font-semibold text-gray-800">Izin</span>
+                                <span class="text-[10px] text-gray-400 tracking-wider uppercase font-medium">Excused</span>
+                            </div>
+                            <div data-status="Sakit" class="status-card border border-solid border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-all duration-200">
+                                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                                    <i data-lucide="plus-square" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[14px] font-semibold text-gray-800">Sakit</span>
+                                <span class="text-[10px] text-gray-400 tracking-wider uppercase font-medium">Sick</span>
+                            </div>
+                            <div data-status="Alfa" class="status-card border border-solid border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-all duration-200">
+                                <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[14px] font-semibold text-gray-800">Alfa</span>
+                                <span class="text-[10px] text-gray-400 tracking-wider uppercase font-medium">Absent</span>
+                            </div>
+                        </div>
+
+                        <button id="btn-submit-presensi" class="w-full bg-[#0B4199] text-white text-[14px] font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 border-none cursor-pointer hover:bg-blue-800 transition-colors shadow-sm disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                            <i data-lucide="send" class="w-4 h-4"></i> Submit Presensi
+                        </button>
+                    </div>
+
+                    <div id="view-belum-mulai" class="bg-white border border-solid border-gray-100 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] p-10 flex flex-col items-center justify-center text-center hidden">
+                        <div class="w-28 h-28 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 mb-5 relative">
+                            <i data-lucide="hourglass" class="w-12 h-12 animate-pulse"></i>
+                            <div class="absolute right-1 top-1 w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm border border-solid border-white">
+                                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-[18px] font-bold text-gray-900 m-0 mb-2">Sesi Belum Dimulai</h3>
+                        <p class="text-[13px] text-gray-500 max-w-sm m-0 leading-relaxed">
+                            Presensi belum dibuka untuk jam sesi ini. Tombol pengisian kehadiran akan aktif otomatis saat jadwal perkuliahan dimulai.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="lg:col-span-4 xl:col-span-4">
+                    <div class="bg-white border border-solid border-gray-100 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] p-6 flex flex-col">
+                        <h2 class="text-[16px] font-bold text-gray-900 mb-4 m-0">Rekap Kehadiran</h2>
+                        
+                        <div class="flex items-center justify-center py-2 mb-4">
+                            <div class="relative w-28 h-28 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-gray-100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="text-[#0B4199]" stroke-dasharray="75, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="absolute text-center flex flex-col items-center justify-center">
+                                    <span class="text-[26px] font-bold text-gray-900 leading-none block">75%</span>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-wider block mt-1">Attendance</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 text-[13px]">
+                            <div class="flex justify-between items-center p-3.5 bg-brand-light rounded-xl">
+                                <span class="text-gray-700 font-medium">Total Pertemuan</span>
+                                <strong class="text-gray-900 font-bold">16 Sesi</strong>
+                            </div>
+                            <div class="flex justify-between items-center p-3.5 bg-brand-light rounded-xl">
+                                <span class="text-emerald-600 font-medium">Kehadiran Anda</span>
+                                <strong class="text-emerald-600 font-bold">12 Sesi</strong>
+                            </div>
+                            <div class="flex justify-between items-center p-3.5 bg-brand-light rounded-xl">
+                                <span class="text-red-500 font-medium">Sisa Ketidakhadiran</span>
+                                <strong class="text-red-500 font-bold">4 Sesi</strong>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-solid border-gray-100 my-4"></div>
+
+                        <div class="flex items-start gap-2.5 text-[11px] text-gray-500 leading-relaxed">
+                            <i data-lucide="info" class="w-4 h-4 text-[#0B4199] shrink-0 mt-0.5"></i>
+                            <span>Batas ketidakhadiran maksimal per mata kuliah adalah 20% untuk mengikuti ujian akhir.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-success" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-xs p-6 text-center animate-fade-in">
+            <div class="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-[17px] font-bold text-gray-900 m-0 mb-1">Presensi Berhasil!</h3>
+            <p class="text-[12px] text-gray-500 m-0 mb-5 max-w-[200px] mx-auto leading-relaxed">
+                Status absensi Anda berhasil disimpan di dalam pangkalan data SIMPADU.
+            </p>
+            
+            <div class="border border-solid border-gray-100 rounded-xl p-3 text-left flex flex-col gap-2 mb-5 text-[12px]">
+                <div class="flex justify-between items-center pb-2 border-b border-solid border-gray-100">
+                    <span class="text-gray-400 font-medium">STATUS</span>
+                    <span id="modal-status-badge" class="font-bold px-2.5 py-0.5 rounded-full text-[10px]">Hadir</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400 font-medium">WAKTU REKAM</span>
+                    <span id="modal-timestamp" class="text-gray-700 font-semibold">08:05 WIB</span>
+                </div>
+            </div>
+
+            <button id="btn-modal-close" class="w-full bg-[#0B4199] text-white text-[13px] font-semibold py-2.5 px-4 rounded-xl border-none cursor-pointer hover:bg-blue-800 transition-colors shadow-sm">
+                Selesai
+            </button>
+        </div>
+    </div>
+
+    <script src="../../js/sidebar.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/logout.js"></script>
+    <script src="../../js/presensi_mhs.js"></script>
+</body>
+</html>

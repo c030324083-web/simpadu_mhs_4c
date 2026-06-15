@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'kelompok_1' => [
+        'url' => env('API_KELOMPOK_1_URL', 'https://api-admin-4c.rifkiaja.my.id:9002/api'),
+    ],
+
+    'kelompok_2' => [
+        'url' => env('API_KELOMPOK_2_URL', 'https://api-pegawai-4c.akufarish.my.id:9001/api'),
+    ],
+    'kelompok_4' => [
+        'url' => env('API_KELOMPOK_4_URL', 'https://keuangan4c06.vps-poliban.my.id/api'),
+    ],
+
 ];

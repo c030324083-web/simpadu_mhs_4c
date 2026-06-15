@@ -1,0 +1,23 @@
+<div id="logoutModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[50] hidden opacity-0 transition-opacity duration-300">
+    
+    <div id="modalCard" class="bg-white rounded-[24px] p-8 md:p-10 max-w-[420px] w-full mx-4 shadow-xl transform scale-95 transition-transform duration-300 text-center relative z-[60] border border-solid border-gray-100">
+        
+        <div class="w-[72px] h-[72px] bg-[#FFF0ED] rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="log-out" class="w-8 h-8 text-[#f23535] ml-1"></i>
+        </div>
+        
+        <h3 class="text-[22px] font-bold text-gray-900 m-0 mb-3 tracking-tight">Yakin Ingin Keluar?</h3>
+        
+        <div id="logoutDesc" class="text-gray-600 text-[13.5px] m-0 mb-8 leading-relaxed"></div>
+        
+        <div class="flex items-center justify-center gap-3.5">
+            <button id="btnBatalLogout" class="flex-1 py-2.5 border border-solid border-gray-200 rounded-xl text-gray-700 font-semibold bg-white hover:bg-gray-50 transition-colors cursor-pointer text-[14px] outline-none">
+                Batal
+            </button>
+            <button id="btnYaKeluar" class="flex-1 py-2.5 bg-[#f23535] hover:bg-red-600 text-white font-semibold rounded-xl border-none transition-colors cursor-pointer text-[14px] outline-none shadow-sm">
+                Ya, Keluar
+            </button>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <div class="hidden">/* [BE-NOTE]: Gunakan helper asset() Laravel untuk meload CSS/JS, contoh: href="{{ asset('css/sidebar.css') }}" */</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penilaian Poliban - Admin Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link rel="stylesheet" href="../../css/sidebar.css">
+
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body, html { background-color: #F8FAFC !important; overflow: hidden; } 
+        #sidebar { background-color: transparent !important; border-right: none !important; }
+        
+        .table-rounded { border-collapse: separate; border-spacing: 0; }
+        .table-rounded thead th { border-bottom: 2px solid #F8FAFC; text-transform: none !important; }
+    </style>
+</head>
+
+<body 
+    data-page="penilaian"
+    data-role="admin"
+    data-page-title="Penilaian Mahasiswa"
+    data-greeting="Penilaian Mahasiswa Per Kelas"
+    data-search="false"
+    class="bg-[#F8FAFC] font-sans m-0 p-0 text-slate-800 antialiased">
+
+    <div class="flex h-screen w-full bg-[#F8FAFC]">
+        <div class="hidden">/* [BE-NOTE]: JADIKAN SIDEBAR KOMPONEN BLADE: @include('layouts.sidebar') */</div>
+        <div id="sidebar" class="w-[240px] shrink-0 hidden lg:block"></div>
+
+        <div class="main flex-1 py-6 pr-6 pl-0 overflow-y-auto bg-[#F8FAFC]">
+            
+            <div class="hidden">/* [BE-NOTE]: JADIKAN HEADER KOMPONEN BLADE: @include('layouts.header') */</div>
+            <div id="header"></div>
+
+            <!-- =========================================================
+                 VIEW 1: KELAS (DEFAULT)
+                 ========================================================= -->
+            <div id="js-view-kelas" class="fade-in block space-y-6">
+                
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-3 items-end">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 font-semibold mb-1 uppercase pl-1">Program Studi</label>
+                        <select class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-600 font-normal min-w-[200px] cursor-pointer hover:border-slate-300">
+                            <div class="hidden">/* [BE-NOTE]: LOOPING OPTION PROGRAM STUDI (@foreach) */</div>
+                            <option>Semua Program Studi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 font-semibold mb-1 uppercase pl-1">Kelas</label>
+                        <select class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-600 font-normal min-w-[150px] cursor-pointer hover:border-slate-300">
+                            <div class="hidden">/* [BE-NOTE]: LOOPING OPTION KELAS (@foreach) */</div>
+                            <option>Semua Kelas</option>
+                        </select>
+                    </div>
+                    <button class="h-[38px] px-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition flex items-center justify-center"><i data-lucide="filter" class="w-4 h-4"></i></button>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800 m-0">Daftar Kelas Penilaian Mahasiswa</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm !font-normal text-slate-500">Sort by</span>
+                            <div class="relative">
+                                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-700 !font-normal cursor-pointer hover:border-slate-300">
+                                    <option>NIM (A-Z)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+
+                    <table class="w-full text-left table-rounded whitespace-nowrap">
+                        <thead class="bg-slate-50 !text-slate-600 text-[12px] font-semibold tracking-wide">
+                            <tr>
+                                <th class="p-4 rounded-tl-lg font-bold w-[20%] uppercase text-slate-700">ID</th>
+                                <th class="p-4 font-bold w-[50%] uppercase text-slate-700">KELAS</th>
+                                <th class="p-4 rounded-tr-lg font-bold w-[30%] uppercase text-slate-700 text-center">PENILAIAN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-kelas" class="text-[13.5px]">
+                            <tr class="hidden"><td colspan="3">/* [BE-NOTE]: LOOPING DAFTAR KELAS (@foreach) */</td></tr>
+                            <!-- 1 DATA DUMMY KELAS -->
+                            <tr class="js-row-kelas border-b border-slate-50 hover:bg-slate-50/50 cursor-pointer transition">
+                                <td class="p-4 font-normal text-slate-800">AK01</td>
+                                <td class="p-4 font-normal text-slate-800">AK-2A</td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-6 justify-end pr-8 lg:pr-16">
+                                        <div class="hidden">/* [BE-NOTE]: Ganti angka dengan count() dinamis dari DB */</div>
+                                        <span class="flex items-center text-slate-800 font-normal text-[13px] gap-1.5"><i data-lucide="check-circle" class="w-[18px] h-[18px] text-emerald-500 stroke-[2.5]"></i> 32</span>
+                                        <span class="flex items-center text-slate-800 font-normal text-[13px] gap-1.5"><i data-lucide="x-circle" class="w-[18px] h-[18px] text-red-500 stroke-[2.5]"></i> 1</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hidden"><td colspan="3">/* [BE-NOTE]: @endforeach */</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="flex justify-center mt-6 border-t border-slate-50 pt-5">
+                        <button class="text-slate-400 font-normal text-[13px] flex items-center gap-1.5 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">
+                            Lainnya <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 VIEW 2: MATAKULIAH
+                 ========================================================= -->
+            <div id="js-view-matkul" class="fade-in hidden space-y-4">
+                
+                <button id="js-btn-back-kelas" class="flex items-center gap-1.5 !text-blue-500 !font-medium text-sm bg-transparent border-none cursor-pointer hover:underline mb-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Kelas
+                </button>
+
+                <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800 m-0">Daftar Matakuliah</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm !font-normal text-slate-500">Sort by</span>
+                            <div class="relative">
+                                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-700 !font-normal cursor-pointer hover:border-slate-300">
+                                    <option>ID (A-Z)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+
+                    <table class="w-full text-left table-rounded whitespace-nowrap">
+                        <thead class="bg-slate-50 !text-slate-600 text-[12px] font-semibold tracking-wide">
+                            <tr>
+                                <th class="p-4 rounded-tl-lg font-bold w-[20%] uppercase text-slate-700">ID</th>
+                                <th class="p-4 font-bold w-[40%] uppercase text-slate-700">Matakuliah</th>
+                                <th class="p-4 rounded-tr-lg font-bold w-[40%] uppercase text-slate-700">Dosen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-matkul" class="text-[13.5px]">
+                            <tr class="hidden"><td colspan="3">/* [BE-NOTE]: LOOPING DAFTAR MATAKULIAH DI KELAS INI (@foreach) */</td></tr>
+                            <!-- 1 DATA DUMMY MATKUL -->
+                            <tr class="js-row-matkul hover:bg-slate-50 cursor-pointer transition">
+                                <td class="p-4 border-b border-slate-50 font-normal text-slate-800">C0320404</td>
+                                <td class="p-4 border-b border-slate-50 font-normal text-slate-800">Keamanan Jaringan</td>
+                                <td class="p-4 border-b border-slate-50 font-normal text-slate-800">Arifin Noor A, S. ST, M. T.</td>
+                            </tr>
+                            <tr class="hidden"><td colspan="3">/* [BE-NOTE]: @endforeach */</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="flex justify-center mt-6 border-t border-slate-50 pt-5">
+                        <button class="text-slate-400 font-normal text-[13px] flex items-center gap-1.5 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">
+                            Lainnya <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 VIEW 3: MAHASISWA
+                 ========================================================= -->
+            <div id="js-view-mhs" class="fade-in hidden space-y-4">
+                
+                <button id="js-btn-back-matkul" class="flex items-center gap-1.5 !text-blue-500 !font-medium text-[13px] bg-transparent border-none cursor-pointer hover:underline mb-1">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Matakuliah
+                </button>
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="js-card-title-mhs" class="text-[16px] font-semibold text-slate-800 m-0">Daftar Nilai Mahasiswa</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm !font-normal text-slate-500">Sort by</span>
+                            <div class="relative">
+                                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-700 !font-normal cursor-pointer hover:border-slate-300">
+                                    <option>NIM (A-Z)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                    
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 text-[13px] font-semibold text-slate-700 tracking-wide">
+                            <tr class="border-b border-slate-100">
+                                <th class="py-4 px-4 w-[20%] font-bold rounded-tl-lg">NIM</th>
+                                <th class="py-4 px-4 w-[35%] font-bold">Nama Mahasiswa</th>
+                                <th class="py-4 px-4 text-center w-[15%] font-bold">Nilai Akhir</th>
+                                <th class="py-4 px-4 text-center w-[15%] font-bold">Grade</th>
+                                <th class="py-4 px-4 text-center w-[15%] font-bold rounded-tr-lg">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-mhs" class="text-[13.5px] text-slate-800 font-normal">
+                            <tr class="hidden"><td colspan="5">/* [BE-NOTE]: LOOPING DAFTAR MHS DI MATKUL INI (@foreach) */</td></tr>
+                            <!-- 1 DATA DUMMY MAHASISWA -->
+                            <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                                <td class="py-3.5 px-4 font-normal text-slate-800">C030324011</td>
+                                <td class="py-3.5 px-4 font-normal text-slate-800">Aufa Qonita Salsabila</td>
+                                <td class="py-3.5 px-4 text-center font-normal text-slate-800">71,2</td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="hidden">/* [BE-NOTE]: Terapkan If/Else dinamis untuk styling background color berdasarkan Grade */</div>
+                                    <span class="bg-[#DBEAFE] text-[#3B82F6] px-3.5 py-0.5 rounded-full text-[11px] font-bold inline-block min-w-[36px] text-center">B</span>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <button class="js-btn-detail-mhs text-blue-500 hover:text-blue-700 transition cursor-pointer bg-transparent border-none p-0">
+                                        <i data-lucide="eye" class="w-[18px] h-[18px] mx-auto"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hidden"><td colspan="5">/* [BE-NOTE]: @endforeach */</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="flex justify-center mt-4 pt-4 border-t border-slate-50">
+                        <button class="text-slate-400 font-normal text-[13.5px] flex items-center gap-1.5 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">
+                            Lainnya <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 VIEW 4: DETAIL PENILAIAN 
+                 ========================================================= -->
+            <div id="js-view-detail" class="fade-in hidden space-y-3">
+                
+                <button id="js-btn-back-mhs" class="flex items-center gap-1.5 !text-blue-500 !font-medium text-[13px] bg-transparent border-none cursor-pointer hover:underline mb-0">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Mahasiswa
+                </button>
+                
+                <!-- Card Identitas Profil -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <div class="flex items-center gap-5 w-full md:w-[60%]">
+                        <div class="hidden">/* [BE-NOTE]: Panggil foto mahasiswa dari storage, contoh: src="{{ asset('storage/' . $mhs->foto) }}" */</div>
+                        <img src="https://ui-avatars.com/api/?name=Aufa+Qonita&background=e0e7ff&color=3b82f6&size=150" alt="Foto Profil" class="w-[72px] h-[72px] rounded-full object-cover shrink-0">
+                        <div>
+                            <h2 class="!text-[20px] !font-bold text-slate-800 m-0 mb-1.5 leading-none">Aufa Qonita Salsabila</h2>
+                            <div class="flex flex-col mt-1">
+                                <span class="!text-[12px] !font-normal text-slate-500 leading-tight">NIM</span>
+                                <span class="!text-[14px] !font-normal text-slate-800 leading-tight mt-0.5">C030324011</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block w-px h-[60px] bg-slate-200 self-center"></div>
+
+                    <div class="flex flex-col gap-3 w-full md:w-[40%] self-center pl-0 md:pl-4">
+                        <div class="flex flex-col">
+                            <span class="!text-[12px] !font-normal text-slate-500 leading-tight">Program Studi</span>
+                            <span class="!text-[14px] !font-normal text-slate-800 leading-tight mt-0.5">D3 Teknik Informatika</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="!text-[12px] !font-normal text-slate-500 leading-tight">Kelas</span>
+                            <span class="!text-[14px] !font-normal text-slate-800 leading-tight mt-0.5">TI-4C</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid Rincian Nilai & Hasil Proyek -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    
+                    <!-- Kiri: Rincian Nilai -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-5 py-3 border-b border-slate-100">
+                            <h3 class="text-[14px] font-bold text-slate-800 m-0">Rincian Nilai</h3>
+                        </div>
+                        <table class="w-full text-left">
+                            <thead class="bg-[#F8FAFF] text-[#3B82F6] text-[12px] font-medium border-b border-[#EEF2FF]">
+                                <tr>
+                                    <th class="py-2.5 px-5 font-medium">Komponen Penilaian</th>
+                                    <th class="py-2.5 px-4 font-medium text-center">Bobot</th>
+                                    <th class="py-2.5 px-4 font-medium text-center">Nilai</th>
+                                    <th class="py-2.5 px-5 font-medium text-center">Nilai Akhir</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-[12px] font-normal text-slate-800">
+                                <div class="hidden">/* [BE-NOTE]: Render nilai UTS, UAS, Tugas dsb menggunakan data dari database */</div>
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-2 px-5 flex items-center gap-2.5 font-normal text-slate-800">
+                                        <div class="w-6 h-6 rounded bg-[#EFF6FF] text-[#3B82F6] flex items-center justify-center shrink-0">
+                                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                                        </div>
+                                        Tugas
+                                    </td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">20%</td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">70</td>
+                                    <td class="py-2 px-5 text-center text-[#3B82F6] font-bold">21</td>
+                                </tr>
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-2 px-5 flex items-center gap-2.5 font-normal text-slate-800">
+                                        <div class="w-6 h-6 rounded bg-[#ECFDF5] text-[#10B981] flex items-center justify-center shrink-0">
+                                            <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i>
+                                        </div>
+                                        Aktivitas Partisipasi
+                                    </td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">20%</td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">75</td>
+                                    <td class="py-2 px-5 text-center text-[#3B82F6] font-bold">75</td>
+                                </tr>
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-2 px-5 flex items-center gap-2.5 font-normal text-slate-800">
+                                        <div class="w-6 h-6 rounded bg-[#FFF7ED] text-[#F97316] flex items-center justify-center shrink-0">
+                                            <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
+                                        </div>
+                                        UTS
+                                    </td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">20%</td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">68</td>
+                                    <td class="py-2 px-5 text-center text-[#3B82F6] font-bold">20.4</td>
+                                </tr>
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-2 px-5 flex items-center gap-2.5 font-normal text-slate-800">
+                                        <div class="w-6 h-6 rounded bg-[#FEF2F2] text-[#EF4444] flex items-center justify-center shrink-0">
+                                            <i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i>
+                                        </div>
+                                        UAS
+                                    </td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">40%</td>
+                                    <td class="py-2 px-4 text-center font-normal text-slate-800">75</td>
+                                    <td class="py-2 px-5 text-center text-[#3B82F6] font-bold">30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Kanan: Hasil Proyek -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-fit">
+                        <div class="px-5 py-3 border-b border-slate-100">
+                            <h3 class="text-[14px] font-bold text-slate-800 m-0">Hasil Proyek</h3>
+                        </div>
+                        <table class="w-full text-left">
+                            <thead class="bg-[#F8FAFF] text-[#3B82F6] text-[12px] font-medium border-b border-[#EEF2FF]">
+                                <tr>
+                                    <th class="py-2.5 px-5 font-medium">Nama Proyek</th>
+                                    <th class="py-2.5 px-5 font-medium text-right">Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-[12px] font-normal text-slate-800">
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-2 px-5 flex items-center gap-2.5 font-normal text-slate-800">
+                                        <div class="w-6 h-6 rounded bg-[#FEF2F2] text-[#EF4444] flex items-center justify-center shrink-0">
+                                            <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>
+                                        </div>
+                                        Sistem Informasi Akademik
+                                    </td>
+                                    <div class="hidden">/* [BE-NOTE]: Render nilai akhir proyek dari database */</div>
+                                    <td class="py-2 px-5 text-right text-[#3B82F6] font-bold">74</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Box Bawah: Total & Progress Bar -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-6">
+                    
+                    <!-- Atas: Skor & Grade -->
+                    <div class="flex items-center justify-center gap-8">
+                        <div class="flex-1 flex flex-col items-center justify-center border-r border-slate-200">
+                            <span class="text-[13px] font-bold text-[#3B82F6] mb-1.5">Total Nilai Akhir</span>
+                            <div class="hidden">/* [BE-NOTE]: Variabel total nilai akhir */</div>
+                            <span class="text-[40px] font-bold text-[#3B82F6] leading-none">71,2</span>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center justify-center">
+                            <span class="text-[13px] font-medium text-slate-600 mb-2">Grade</span>
+                            <div class="hidden">/* [BE-NOTE]: Variabel grade akhir */</div>
+                            <div class="bg-[#DBEAFE] text-[#3B82F6] font-bold text-xl px-10 py-2 rounded-full leading-none">B</div>
+                        </div>
+                    </div>
+
+                    <!-- Bawah: Progress Bar & Legend -->
+                    <div class="flex flex-col gap-3 px-2">
+                        <span class="text-[13px] font-medium text-slate-600 text-center md:text-left">Distribusi Bobot Penilaian</span>
+                        
+                        <!-- Bar -->
+                        <div class="hidden">/* [BE-NOTE]: Gunakan style inline width berdasarkan persentase nilai bobot dari Controller */</div>
+                        <div class="flex w-full h-[12px] rounded-full overflow-hidden">
+                            <div class="bg-[#2563EB]" style="width: 25%"></div> <!-- Biru -->
+                            <div class="bg-[#16A34A]" style="width: 25%"></div> <!-- Hijau -->
+                            <div class="bg-[#FBBF24]" style="width: 25%"></div> <!-- Kuning -->
+                            <div class="bg-[#EF4444]" style="width: 10%"></div> <!-- Merah -->
+                            <div class="bg-[#A855F7]" style="width: 15%"></div> <!-- Ungu -->
+                        </div>
+                        
+                        <!-- Legenda -->
+                        <div class="flex justify-between items-center text-[10px] sm:text-[11px] font-normal text-slate-500 mt-0.5 px-1">
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-4 h-2 rounded-[2px] bg-[#2563EB]"></div> Tugas (30%)
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-4 h-2 rounded-[2px] bg-[#16A34A]"></div> UTS (30%)
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-4 h-2 rounded-[2px] bg-[#FBBF24]"></div> UAS (40%)
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-4 h-2 rounded-[2px] bg-[#EF4444]"></div> Aktivitas
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-4 h-2 rounded-[2px] bg-[#A855F7]"></div> Proyek
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="hidden">/* [BE-NOTE]: Gunakan asset() Laravel untuk memanggil JS */</div>
+    <script src="../../js/sidebar.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/logout.js"></script>
+    <!-- [BE-NOTE]: Hubungkan script logika transisi UI di bawah ini -->
+    <script src="../../js/penilaian_adm.js"></script>
+
+</body>
+</html>

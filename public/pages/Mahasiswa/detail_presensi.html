@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mahasiswa - Presensi</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../css/sidebar.css">
+
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+        body, html {
+            background-color: #F8FAFC !important;
+            margin: 0;
+            padding: 0;
+        }
+        /* Menyembunyikan scrollbar default pada slider kartu agar lebih rapi */
+        .slider-container::-webkit-scrollbar {
+            display: none;
+        }
+        .slider-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Custom scrollbar halus untuk daftar sesi di dalam modal */
+        .modal-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 99px;
+        }
+    </style>
+</head>
+
+<body 
+    data-page="presensi"
+    data-role="mhs"
+    data-page-title="Presensi"
+    data-greeting="Presensi Matakuliah"
+    data-search="false"
+    class="bg-[#F8FAFC] font-sans m-0 p-0 text-slate-800 antialiased">
+
+    <div class="flex min-h-screen w-full bg-[#F8FAFC]">
+        
+       <div id="sidebar" class="w-[270px] shrink-0 hidden lg:block"></div>
+        
+        <div class="main flex-1 py-6 pr-6 pl-0 overflow-y-auto bg-[#F8FAFC]">
+            
+            <div id="header"></div>
+
+            <div class="content-body pt-0 animate-fade-in overflow-x-hidden">
+                <div id="courseGrid" class="slider-container flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 snap-x snap-mandatory pb-6 scroll-smooth">
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="detailModal" class="fixed inset-0 lg:left-[240px] bg-black/50 flex items-center justify-center z-[9999] hidden opacity-0 transition-opacity duration-300">
+        
+        <div id="modalCard" class="bg-white rounded-[24px] p-6 md:p-8 max-w-[720px] w-full mx-4 shadow-[0_20px_60px_rgba(0,0,0,0.15)] transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col border border-solid border-gray-100/80">
+            
+            <button id="closeModalBtn" class="absolute top-6 right-6 text-gray-400 hover:text-gray-700 bg-transparent border-none cursor-pointer outline-none transition-colors p-0">
+                <i data-lucide="x" class="w-6 h-6 stroke-[2.5]"></i>
+            </button>
+
+            <div class="flex items-center gap-5 pb-5 border-0 border-b border-solid border-gray-100">
+                <div class="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-blue-50" stroke-width="3.2" stroke="currentColor" fill="transparent" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path id="modalCircleProgress" class="text-blue-600" stroke-dasharray="75, 100" stroke-width="3.2" stroke-linecap="round" stroke="currentColor" fill="transparent" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <div id="modalPercentText" class="absolute text-base font-extrabold text-blue-600 tracking-tight">75%</div>
+                </div>
+                <div class="pr-6">
+                    <h2 id="modalCourseTitle" class="text-lg md:text-xl font-bold text-gray-900 m-0 leading-snug tracking-tight">Nama Mata Kuliah</h2>
+                    <div class="flex items-center gap-1.5 text-gray-400 text-xs mt-2 font-medium">
+                        <i data-lucide="flag" class="w-3.5 h-3.5 text-gray-400"></i>
+                        <span>D3 Teknik Informatika</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center py-4 text-xs md:text-sm font-bold text-gray-400 tracking-wide">
+                <span>Daftar Sesi</span>
+                <span id="modalPresensiCount" class="text-gray-400 font-medium">Presensi 12 / 16</span>
+            </div>
+
+            <div id="sessionListContainer" class="modal-scroll flex-1 overflow-y-auto pr-1 max-h-[48vh] divide-y divide-solid divide-gray-100">
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../../js/sidebar.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/logout.js"></script>
+    <script src="../../js/detail_presensi_mhs.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4 w-full">
+
+    <div>
+        <h1 id="pageTitle" class="text-[26px] font-bold text-gray-900 tracking-tight"></h1>
+        <p id="welcomeText" class="text-gray-500 mt-0.5 text-[14px]"></p>
+        
+        <div class="hidden">/* [BE-NOTE]: Elemen ini untuk merender Tahun Akademik (Hanya di Dashboard) */</div>
+        <p id="academicYear" class="text-gray-500 mt-0.5 text-[13px] hidden"></p>
+    </div>
+
+    <div id="dropdownOverlay" class="fixed inset-0 bg-black/50 hidden z-[40] cursor-default transition-opacity duration-200" style="margin: 0; padding: 0;"></div>
+
+    <div class="flex items-center justify-end relative z-[70]">
+        
+        <div id="avatarBox" class="relative flex items-center space-x-1.5 cursor-pointer group">
+
+            <div class="avatar w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center text-white text-[14px] font-medium shadow-sm transition-transform group-hover:scale-105">
+                MH
+            </div>
+
+            <svg id="arrowIcon" class="w-3.5 h-3.5 text-gray-400 transition-transform duration-200 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+
+            <div id="dropdownMenu" class="absolute right-0 top-14 w-60 bg-white rounded-2xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)] p-4 hidden z-[70] border border-gray-100">
+
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="avatar w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                    </div>
+                    <div class="font-bold text-gray-800 text-[14px] user-name truncate">
+                    </div>
+                </div>
+
+                <hr class="mb-3 border-gray-100">
+
+                <nav class="flex flex-col gap-0.5">
+                    <a href="/pages/Mahasiswa/data_mhs.html" class="block px-2 py-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded-lg text-[14px] transition-colors font-medium no-underline">
+                        Data Mahasiswa
+                    </a>
+
+                    <a href="/pages/Mahasiswa/status_sms.html" class="block px-2 py-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded-lg text-[14px] transition-colors font-medium no-underline">
+                        Status Semester
+                    </a>
+
+                    <a href="/pages/Mahasiswa/tagihan.html" class="block px-2 py-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded-lg text-[14px] transition-colors font-medium no-underline">
+                        Riwayat Pembayaran
+                    </a>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+
+</div>

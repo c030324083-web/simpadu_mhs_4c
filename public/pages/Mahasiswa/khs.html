@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <div class="hidden">/* [BE-NOTE]: Gunakan helper asset() Laravel untuk memanggil stylesheet/JS */</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHS Poliban - Mahasiswa Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link rel="stylesheet" href="../../css/sidebar.css">
+
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body, html { background-color: #F8FAFC !important; }
+        #sidebar { background-color: transparent !important; border-right: none !important; }
+        
+        .table-rounded { border-collapse: separate; border-spacing: 0; }
+        .table-rounded thead th { border-bottom: 2px solid #F8FAFC; text-transform: none !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+
+<body 
+    data-page="khs"
+    data-role="mhs"
+    data-page-title="Kartu Hasil Studi"
+    data-greeting="KHS Mahasiswa"
+    data-search="false"
+    class="bg-[#F8FAFC] font-sans m-0 p-0 text-slate-800 antialiased overflow-hidden">
+
+    <div class="flex h-screen w-full">
+        <div class="hidden">/* [BE-NOTE]: JADIKAN SIDEBAR KOMPONEN BLADE */</div>
+        <div id="sidebar" class="w-[240px] shrink-0 hidden lg:block h-screen z-20 relative"></div>
+
+        <div class="main flex-1 py-6 px-6 lg:pr-8 lg:pl-0 overflow-y-auto bg-[#F8FAFC]">
+            
+            <div class="hidden">/* [BE-NOTE]: JADIKAN HEADER KOMPONEN BLADE */</div>
+            <div id="header"></div>
+
+            <div id="view-detail" class="fade-in block">
+
+                <div class="flex items-center gap-4 mb-4 -mt-4 ml-1">
+                    <label class="text-[15px] font-bold text-slate-900">Periode</label>
+                    <div class="relative">
+                        <div class="hidden">/* [BE-NOTE]: Bind data periode ini dari DB. */</div>
+                        <select id="periode-select" class="appearance-none pl-4 pr-10 py-1.5 bg-white border border-slate-200 rounded-xl text-[14px] text-slate-600 outline-none cursor-pointer hover:border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium min-w-[140px] shadow-sm">
+                            <option value="2025-genap">2025 Genap</option>
+                            <option value="2025-ganjil">2025 Ganjil</option>
+                            <option value="2024-genap">2024 Genap</option>
+                            <option value="2024-ganjil">2024 Ganjil</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center gap-8 justify-start mb-4">
+                    
+                    <div class="flex items-center gap-5 w-full md:w-auto min-w-max">
+                        <div class="hidden">/* [BE-NOTE]: Ikat src ke foto user Auth (auth()->user()->foto) */</div>
+                        <img src="https://ui-avatars.com/api/?name=Aufa+Qonita&background=e0e7ff&color=3b82f6&size=150" alt="Foto Profil" class="w-[75px] h-[75px] rounded-full object-cover shrink-0">
+                        <div class="flex flex-col">
+                            <h2 class="text-[20px] font-bold text-slate-800 m-0 mb-3 leading-none tracking-tight">Aufa Qonita Salsabila</h2>
+                            <div class="flex flex-col">
+                                <span class="text-[13px] text-slate-500 leading-tight">NIM</span>
+                                <span class="text-[14px] text-slate-700 leading-tight mt-0.5">C030324011</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block w-px h-[80px] bg-slate-200 shrink-0"></div>
+
+                    <div class="flex flex-col gap-4 w-full md:w-auto min-w-max">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] text-slate-500 leading-tight">Program Studi</span>
+                            <span class="text-[14.5px] text-slate-700 leading-tight mt-0.5">D3 Teknik Informatika</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[13px] text-slate-500 leading-tight">Kelas</span>
+                            <span class="text-[14.5px] text-slate-700 leading-tight mt-0.5">TI-4C</span>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block w-px h-[80px] bg-slate-200 shrink-0"></div>
+
+                    <div class="flex flex-col gap-4 w-full md:w-auto min-w-max">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] text-slate-500 leading-tight">Dosen Pembimbing</span>
+                            <span class="text-[14.5px] text-slate-700 leading-tight mt-0.5">Herlinawati, S.Ag., M.Pd.</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="text-[13px] text-slate-500 leading-tight mb-1">Status Mahasiswa</span>
+                            <span class="bg-[#DCFCE7] text-[#22C55E] px-3 py-1 rounded-full text-[11px] font-semibold w-fit">Aktif</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col mb-10">
+                    <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="text-[15px] font-bold text-slate-800 m-0">Daftar Matakuliah yang Diambil</h3>
+                    </div>
+                    
+                    <table class="w-full text-left">
+                        <thead class="bg-[#F8FAFF] text-slate-800 text-[12px] font-semibold border-b border-[#EEF2FF]">
+                            <tr>
+                                <th class="py-3 px-5 font-bold text-slate-700 w-[20%]">Kode MK</th>
+                                <th class="py-3 px-5 font-bold text-slate-700 w-[40%]">Matakuliah</th>
+                                <th class="py-3 px-5 font-bold text-slate-700 text-center w-[10%]">SKS</th>
+                                <th class="py-3 px-5 font-bold text-slate-700 text-center w-[15%]">Nilai</th>
+                                <th class="py-3 px-5 font-bold text-slate-700 text-center w-[15%]">Huruf</th>
+                            </tr>
+                        </thead>
+                        <tbody id="khs-table-body" class="text-[13px] text-slate-800 font-normal">
+                            </tbody>
+                    </table>
+
+                    <div class="hidden">/* [BE-NOTE]: Kalkulasi Total SKS, IPS, dan IPK diletakkan di sini */</div>
+                    <div class="px-6 py-4 bg-[#EEF2FF] border-t border-slate-100 flex justify-between mx-5 mb-5 rounded-xl items-center mt-4">
+                        <div class="flex items-center gap-2 text-blue-600 font-bold text-[14px]">
+                            <i data-lucide="book-open" class="w-5 h-5"></i> Total <span id="total-sks">0</span> SKS
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 font-bold text-[14px]">
+                            <i data-lucide="bar-chart-2" class="w-5 h-5"></i> IPS (<span id="total-ips">0.00</span>)
+                        </div>
+                        <div class="flex items-center gap-2 text-purple-600 font-bold text-[14px]">
+                            <i data-lucide="star" class="w-5 h-5"></i> IPK (<span id="total-ipk">3.93</span>)
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/sidebar.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/logout.js"></script>
+    
+    <script src="../../js/global_filter_sort.js"></script>
+    <script src="../../js/khs_mhs.js"></script> 
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi Poliban - Admin Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link rel="stylesheet" href="../../css/sidebar.css">
+
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .table-rounded { border-collapse: separate; border-spacing: 0; }
+        .table-rounded thead th { border-bottom: 2px solid #F8FAFC; text-transform: none !important; }
+    </style>
+</head>
+
+<body 
+    data-page="presensi"
+    data-role="admin"
+    data-page-title="Presensi"
+    data-greeting="Kelola Presensi/Kehadiran Mahasiswa"
+    data-search="false"
+    class="bg-[#F8FAFC] font-sans m-0 p-0 text-slate-800 antialiased">
+
+    <div class="flex min-h-screen w-full">
+        
+        <div class="hidden">/* [BE-NOTE]: JADIKAN SIDEBAR KOMPONEN BLADE: @include('layouts.sidebar') */</div>
+        <div id="sidebar" class="w-[270px] shrink-0 hidden lg:block"></div>
+
+        <div class="main flex-1 py-6 pr-6 pl-0 overflow-y-auto bg-[#F8FAFC]">
+            
+            <div class="hidden">/* [BE-NOTE]: JADIKAN HEADER KOMPONEN BLADE: @include('layouts.header') */</div>
+            <div id="header"></div>
+
+            <div id="js-view-kelas" class="fade-in block space-y-6">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-50 text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="calendar" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="hidden">/* [BE-NOTE]: Ganti angka "45" di bawah dengan variabel total kelas hari ini */</div>
+                                <h2 class="text-2xl font-bold text-slate-800 leading-none m-0">45</h2>
+                                <h5 class="text-xs font-medium text-slate-500 m-0 mt-1">Total Kelas Hari Ini</h5>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-medium m-0 pl-[60px]">Rabu, 29 April 2026</p> 
+                    </div>
+
+                    <div class="card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3 justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-emerald-50 text-emerald-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="hidden">/* [BE-NOTE]: Ganti "2.320" dengan total mahasiswa hadir hari ini */</div>
+                                <h2 class="text-2xl font-bold text-slate-800 leading-none m-0">2.320</h2>
+                                <h5 class="text-xs font-medium text-slate-500 m-0 mt-1">Mahasiswa Hadir</h5>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center w-fit text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded"><i data-lucide="arrow-up" class="w-3 h-3 mr-0.5"></i> 8.2%</span>
+                    </div>
+
+                    <div class="card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3 justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-orange-50 text-orange-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="user" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="hidden">/* [BE-NOTE]: Ganti "151" dengan total izin/sakit hari ini */</div>
+                                <h2 class="text-2xl font-bold text-slate-800 leading-none m-0">151</h2>
+                                <h5 class="text-xs font-medium text-slate-500 m-0 mt-1">Izin / Sakit</h5>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center w-fit text-[10px] font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded"><i data-lucide="arrow-up" class="w-3 h-3 mr-0.5"></i> 8.2%</span>
+                    </div>
+
+                    <div class="card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3 justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-red-50 text-red-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="user-x" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="hidden">/* [BE-NOTE]: Ganti "50" dengan total alfa hari ini */</div>
+                                <h2 class="text-2xl font-bold text-slate-800 leading-none m-0">50</h2>
+                                <h5 class="text-xs font-medium text-slate-500 m-0 mt-1">Alfa</h5>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center w-fit text-[10px] font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded"><i data-lucide="arrow-down" class="w-3 h-3 mr-0.5"></i> 8.2%</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-3 items-end">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 font-semibold mb-1 uppercase pl-1">Program Studi</label>
+                        <select class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-600 font-medium  min-w-[200px] cursor-pointer hover:border-slate-300">
+                            <option>Semua Program Studi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 font-semibold mb-1 uppercase pl-1">Kelas</label>
+                        <select class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-600 font-medium  min-w-[150px] cursor-pointer hover:border-slate-300">
+                            <option>Semua Kelas</option>
+                        </select>
+                    </div>
+                    <button class="h-[38px] px-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition flex items-center justify-center"><i data-lucide="filter" class="w-4 h-4"></i></button>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-[16px] font-bold text-slate-800 m-0">Daftar Presensi Mahasiswa</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm !font-normal text-slate-500">Sort by</span>
+                            <div class="relative">
+                                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-700 !font-normal cursor-pointer hover:border-slate-300">
+                                    <option>ID Kelas (A-Z)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+
+                    <table class="w-full text-left table-rounded whitespace-nowrap">
+                        <thead class="bg-slate-50 !text-slate-600 text-[12px] font-semibold tracking-wide">
+                            <tr>
+                                <th class="p-4 rounded-tl-lg font-bold w-[20%] uppercase text-slate-700">ID</th>
+                                <th class="p-4 font-bold w-[50%] uppercase text-slate-700">KELAS</th>
+                                <th class="p-4 rounded-tr-lg font-bold w-[30%] uppercase text-slate-700 text-center">KEHADIRAN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-kelas" class="text-sm">
+                            <tr class="hidden"><td colspan="5">/* [BE-NOTE]: LOOPING DAFTAR KELAS (@foreach) */</td></tr>
+                            <tr class="js-row-kelas border-b border-slate-50 hover:bg-slate-50/50 cursor-pointer transition">
+                                <td class="p-4 font-normal text-slate-800">AK01</td>
+                                <td class="p-4 font-normal text-slate-800">AK-2A</td>
+                                <td class="p-4 pr-8 lg:pr-12">
+                                    <div class="flex justify-end gap-4">
+                                        <span class="flex items-center text-slate-800 font-normal text-sm gap-1.5"><i data-lucide="check-circle" class="w-[18px] h-[18px] text-emerald-500 stroke-[2.5]"></i> 32</span>
+                                        <span class="flex items-center text-slate-800 font-normal text-sm gap-1.5"><i data-lucide="clock" class="w-[18px] h-[18px] text-orange-500 stroke-[2.5]"></i> 1</span>
+                                        <span class="flex items-center text-slate-800 font-normal text-sm gap-1.5"><i data-lucide="x-circle" class="w-[18px] h-[18px] text-red-500 stroke-[2.5]"></i> 2</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="flex justify-center mt-6 border-t border-slate-50 pt-5">
+                        <button class="text-slate-400 font-normal text-[13.5px] flex items-center gap-1.5 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">
+                            Lainnya <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="js-view-matkul" class="fade-in hidden space-y-4">
+                
+                <button id="js-btn-back-kelas" class="flex items-center gap-1.5 !text-blue-500 !font-medium text-[13px] bg-transparent border-none cursor-pointer hover:underline mb-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Kelas
+                </button>
+                
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800 m-0">Daftar Matakuliah TI - 4C</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm !font-normal text-slate-500">Sort by</span>
+                            <div class="relative">
+                                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-700 !font-normal cursor-pointer hover:border-slate-300">
+                                    <option>ID Matakuliah (A-Z)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                    
+                    <table class="w-full text-left table-rounded">
+                        <thead class="bg-slate-50 text-[12px] tracking-normal">
+                            <tr>
+                                <th class="p-4 rounded-tl-lg font-bold w-[20%] text-slate-700">ID</th>
+                                <th class="p-4 font-bold w-[40%] text-slate-700">Matakuliah</th>
+                                <th class="p-4 rounded-tr-lg font-bold w-[40%] text-slate-700">Dosen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-matkul" class="text-sm">
+                            <tr class="hidden"><td colspan="5">/* [BE-NOTE]: LOOPING DAFTAR MATKUL (@foreach) */</td></tr>
+                            <tr class="js-row-matkul hover:bg-slate-50 cursor-pointer transition">
+                                <td class="p-4 border-b border-slate-50 text-slate-600 font-normal">C0320403</td>
+                                <td class="p-4 border-b border-slate-50 font-normal text-slate-800">Metode Numerik</td>
+                                <td class="p-4 border-b border-slate-50 text-slate-800 font-normal">Nitami Lestari Putri, S.Kom, M.Kom</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="flex justify-center mt-6">
+                        <button class="text-slate-400 font-normal text-sm flex items-center gap-1 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">Lainnya <i data-lucide="chevron-down" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="js-view-mhs" class="fade-in hidden space-y-4">
+                
+                <button id="js-btn-back-matkul" class="flex items-center gap-1.5 !text-blue-500 !font-medium text-[13px] bg-transparent border-none cursor-pointer hover:underline mb-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Matakuliah
+                </button>
+                
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800 m-0">Daftar Presensi Mahasiswa TI-4C</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm !font-normal text-slate-500">Sort by</span>
+                            <div class="relative">
+                                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-700 !font-normal cursor-pointer hover:border-slate-300">
+                                    <option>NIM (A-Z)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition"><i data-lucide="list" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                    
+                    <table class="w-full text-left table-rounded">
+                        <thead class="bg-slate-50 text-[12px] tracking-normal">
+                            <tr>
+                                <th class="p-4 rounded-tl-lg font-bold w-[20%] text-slate-700">NIM</th>
+                                <th class="p-4 font-bold w-[35%] text-slate-700">Nama Mahasiswa</th>
+                                <th class="p-4 font-bold w-[30%] text-slate-700">Presentase</th>
+                                <th class="p-4 text-center rounded-tr-lg font-bold w-[15%] text-slate-700">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-mhs" class="text-sm">
+                            <tr class="hidden"><td colspan="5">/* [BE-NOTE]: LOOPING DAFTAR MAHASISWA (@foreach) */</td></tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 border-b border-slate-50 text-slate-800 font-normal">C030324011</td>
+                                <td class="p-4 border-b border-slate-50 font-normal text-slate-800">Aufa Qonita Salsabila</td>
+                                <td class="p-4 border-b border-slate-50">
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="hidden">/* [BE-NOTE]: Ganti angka 11 dan 16 dengan variabel sesi (contoh: {{ $sesi_hadir }} dari {{ $sesi_total }}) */</div>
+                                        <span class="text-[11px] text-slate-500 font-normal">Kehadiran: 11 dari 16 sesi</span>
+                                        <div class="flex items-center gap-3">
+                                            <div class="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                                <div class="hidden">/* [BE-NOTE]: Atur atribut width di bawah secara dinamis menggunakan persentase */</div>
+                                                <div class="bg-blue-500 h-full" style="width: 75%"></div>
+                                            </div>
+                                            <span class="text-[10px] text-slate-500 font-medium">75%</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-b border-slate-50 text-center">
+                                    <button class="js-btn-detail-mhs w-8 h-8 rounded-full bg-blue-50 text-blue-600 border-none cursor-pointer hover:bg-blue-600 hover:text-white transition inline-flex items-center justify-center">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="flex justify-center mt-6">
+                        <button class="text-slate-400 font-normal text-sm flex items-center gap-1 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">Lainnya <i data-lucide="chevron-down" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================= -->
+            <!-- VIEW 4: DETAIL PRESENSI (SEMUA KONTEN DI SINI ADALAH DUMMY UNTUK BE) -->
+            <!-- ======================================================================= -->
+            <div id="js-view-detail" class="fade-in hidden space-y-4">
+                
+                <button id="js-btn-back-mhs" class="flex items-center gap-1.5 !text-blue-500 !font-medium text-[13px] bg-transparent border-none cursor-pointer hover:underline mb-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Mahasiswa
+                </button>
+                
+                <div class="hidden">/* [BE-NOTE]: BAGIAN IDENTITAS MAHASISWA INI ADALAH DUMMY. HARAP DIGANTI DENGAN VARIABEL DATABASE (NAMA, NIM, PRODI, KELAS). */</div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-8 mb-4">
+                    <div class="flex items-center gap-6 w-full md:w-1/2">
+                        <div class="hidden">/* [BE-NOTE]: Ganti atribut src img di bawah dengan path foto asli mahasiswa atau gunakan UI Avatars dinamis: https://ui-avatars.com/api/?name={{ urlencode($mhs->nama) }} */</div>
+                        <img src="https://ui-avatars.com/api/?name=Aufa+Qonita&background=e0e7ff&color=3b82f6&size=150" alt="Foto Profil" class="w-[84px] h-[84px] rounded-full object-cover border border-slate-100 shrink-0">
+                        <div>
+                            <div class="hidden">/* [BE-NOTE]: Ganti Teks Nama dan NIM dengan Variabel (misal: {{ $mhs->nama }}) */</div>
+                            <h2 class="!text-[22px] !font-bold text-slate-800 m-0 mb-2 leading-none">Aufa Qonita Salsabila</h2>
+                            <div class="flex flex-col mt-2">
+                                <span class="!text-[13px] !font-normal text-slate-500 leading-tight">NIM</span>
+                                <span class="!text-[14px] !font-normal text-slate-700 leading-tight mt-0.5">C030324011</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block w-px h-[72px] bg-slate-200 self-center"></div>
+
+                    <div class="flex flex-col gap-4 w-full md:w-1/2 self-center">
+                        <div class="flex flex-col">
+                            <div class="hidden">/* [BE-NOTE]: Ganti Teks Prodi dummy ini */</div>
+                            <span class="!text-[13px] !font-normal text-slate-500 leading-tight">Program Studi</span>
+                            <span class="!text-[14px] !font-normal text-slate-700 leading-tight mt-0.5">D3 Teknik Informatika</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="hidden">/* [BE-NOTE]: Ganti Teks Kelas dummy ini */</div>
+                            <span class="!text-[13px] !font-normal text-slate-500 leading-tight">Kelas</span>
+                            <span class="!text-[14px] !font-normal text-slate-700 leading-tight mt-0.5">TI-4C</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden">/* [BE-NOTE]: SEMUA ANGKA PADA 4 KOTAK STATISTIK DI BAWAH ADALAH DUMMY. HARAP DIGANTI DENGAN HASIL QUERY PRESENSI. */</div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="calendar" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="!text-[11px] !font-medium text-slate-500 mb-1 leading-none">Total Pertemuan</span>
+                            <div class="hidden">/* [BE-NOTE]: Angka Dummy. Ganti "11/16" dengan {{ $sesi_dihadiri }}/{{ $sesi_total }} */</div>
+                            <span class="!text-[28px] !font-bold text-slate-800 leading-none mb-1">11/16</span>
+                            <span class="!text-[11px] !font-medium text-slate-800 leading-none">Pertemuan</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+                        <div class="flex flex-col gap-2 items-center shrink-0">
+                            <div class="w-12 h-12 rounded-xl bg-green-100 text-green-500 flex items-center justify-center">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col pt-1">
+                            <span class="!text-[11px] !font-medium text-slate-800 mb-1 leading-none">Hadir</span>
+                            <div class="hidden">/* [BE-NOTE]: Angka Dummy. Ganti angka "10" dengan Variabel */</div>
+                            <span class="!text-[28px] !font-bold text-slate-800 leading-none mb-1">10</span>
+                            <span class="!text-[11px] !font-medium text-slate-800 leading-none">Perteman</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+                        <div class="flex flex-col gap-2 items-center shrink-0">
+                            <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-500 flex items-center justify-center">
+                                <i data-lucide="user" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col pt-1">
+                            <span class="!text-[11px] !font-medium text-slate-800 mb-1 leading-none">Izin / Sakit</span>
+                            <div class="hidden">/* [BE-NOTE]: Angka Dummy. Ganti angka "1" dengan Variabel */</div>
+                            <span class="!text-[28px] !font-bold text-slate-800 leading-none mb-1">1</span>
+                            <span class="!text-[11px] !font-medium text-slate-800 leading-none">Perteman</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+                        <div class="flex flex-col gap-2 items-center shrink-0">
+                            <div class="w-12 h-12 rounded-xl bg-red-100 text-red-500 flex items-center justify-center">
+                                <i data-lucide="user-x" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col pt-1">
+                            <span class="!text-[11px] !font-medium text-slate-800 mb-1 leading-none">Alfa</span>
+                            <div class="hidden">/* [BE-NOTE]: Angka Dummy. Ganti angka "0" dengan Variabel */</div>
+                            <span class="!text-[28px] !font-bold text-slate-800 leading-none mb-1">0</span>
+                            <span class="!text-[11px] !font-medium text-slate-800 leading-none">Perteman</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden">/* [BE-NOTE]: HEADER TABEL DI BAWAH (NAMA MATKUL, DOSEN, SKS, RUANG) ADALAH DUMMY. HARAP DIGANTI DENGAN VARIABEL JADWAL. */</div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap lg:flex-nowrap items-center justify-between mb-4 gap-4">
+                    <div>
+                        <p class="!text-[11px] text-slate-400 !font-normal m-0 mb-1">Matakuliah</p>
+                        <p class="!text-[13px] !font-bold text-slate-800 m-0">Metode Numerik</p>
+                    </div>
+                    <div class="w-px h-8 bg-slate-200 hidden lg:block"></div>
+                    <div>
+                        <p class="!text-[11px] text-slate-400 !font-normal m-0 mb-1">Dosen</p>
+                        <p class="!text-[13px] !font-bold text-slate-800 m-0">Nitami Lestari Putri, S. Kom. M. Kom.</p>
+                    </div>
+                    <div class="w-px h-8 bg-slate-200 hidden lg:block"></div>
+                    <div>
+                        <p class="!text-[11px] text-slate-400 !font-normal m-0 mb-1">SKS</p>
+                        <p class="!text-[13px] !font-bold text-slate-800 m-0">3</p>
+                    </div>
+                    <div class="w-px h-8 bg-slate-200 hidden lg:block"></div>
+                    <div>
+                        <p class="!text-[11px] text-slate-400 !font-normal m-0 mb-1">Hari/Tanggal</p>
+                        <p class="!text-[13px] !font-bold text-slate-800 m-0">Kamis, 7 Mei 2026</p>
+                    </div>
+                    <div class="w-px h-8 bg-slate-200 hidden lg:block"></div>
+                    <div>
+                        <p class="!text-[11px] text-slate-400 !font-normal m-0 mb-1">Jam</p>
+                        <p class="!text-[13px] !font-bold text-slate-800 m-0">08.00 - 10.30</p>
+                    </div>
+                    <div class="w-px h-8 bg-slate-200 hidden lg:block"></div>
+                    <div>
+                        <p class="!text-[11px] text-slate-400 !font-normal m-0 mb-1">Ruang</p>
+                        <p class="!text-[13px] !font-bold text-slate-800 m-0">Lab. ARVR</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 text-sm tracking-normal">
+                            <tr>
+                                <th class="py-4 px-6 font-bold text-slate-700">Pertemuan</th>
+                                <th class="py-4 px-6 font-bold text-slate-700">Tanggal</th>
+                                <th class="py-4 px-6 font-bold text-slate-700">Jam</th>
+                                <th class="py-4 px-6 font-bold text-slate-700">Materi</th>
+                                <th class="py-4 px-6 font-bold text-center text-slate-700">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-tbody-detail" class="text-[14px] text-slate-600 font-normal">
+                            <tr class="hidden"><td colspan="5">/* [BE-NOTE]: LOOPING DAFTAR RIWAYAT PERTEMUAN MAHASISWA (@foreach) */</td></tr>
+                            <tr class="border-t border-slate-100">
+                                <td class="py-4 px-6">1</td>
+                                <td class="py-4 px-6">Kamis, 12 Februari 2026</td>
+                                <td class="py-4 px-6">08.00 - 10.30</td>
+                                <td class="py-4 px-6">Kontrak Perkuliahan</td>
+                                <div class="hidden">/* [BE-NOTE]: Atur statement If/Else Blade di sini untuk menentukan Class warna Badge sesuai Status Presensi (Hadir=Hijau, Izin=Orange, Alfa=Merah) */</div>
+                                <td class="py-4 px-6"><span class="bg-green-100 text-green-600 px-4 py-1 rounded-full text-[11px] font-medium">Hadir</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="flex justify-center py-5 border-t border-slate-100">
+                        <button class="text-slate-400 font-normal text-sm flex items-center gap-1 hover:text-slate-600 transition bg-transparent border-none cursor-pointer">
+                            Lihat Selengkapnya <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="hidden">/* [BE-NOTE]: Gunakan helper asset() untuk semua script di bawah ini */</div>
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/logout.js"></script>
+    <script src="../js/presensi_adm.js"></script>
+
+</body>
+</html>

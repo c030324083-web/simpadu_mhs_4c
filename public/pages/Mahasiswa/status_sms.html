@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status Semester</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../css/sidebar.css">
+<link rel="stylesheet" href="../../css/data_mhs.css">
+
+<script>
+    tailwind.config = {
+        corePlugins: { preflight: false }
+    }
+</script>
+
+<style>
+/* Animasi masuk */
+.animate-fade-in {
+    opacity: 0; 
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+    
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+</head>
+
+<body data-role="mhs"
+      data-page-title="Status Semester"
+      data-greeting="Data per Semester Mahasiswa"
+      class="bg-[#f8fafc] font-sans m-0 p-0 text-slate-800 antialiased">
+
+    <div class="container">
+        
+        <div id="sidebar"></div>
+        
+        <div class="main animate-fade-in px-6 pb-10">
+            
+            <div id="header"></div>
+
+            <div class="bg-white border border-slate-200 border-solid rounded-xl shadow-sm mt-6 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                
+                <div class="flex items-center gap-5 w-full md:w-[30%]">
+                    <div class="w-20 h-20 rounded-full bg-[#e6f0ff] text-[#0B4199] flex items-center justify-center shrink-0">
+                        <i data-lucide="user" class="w-8 h-8"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 id="head-nama" class="text-xl font-bold text-slate-800 mb-2">-</h2>
+                        <div class="flex flex-col leading-tight">
+                            <span class="text-slate-500 text-sm">NIM</span>
+                            <span id="head-nim" class="text-slate-700 text-sm font-medium mt-0.5">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden md:block w-px h-20 bg-[#E8EBF2]"></div>
+
+                <div class="flex flex-col gap-4 w-full md:w-[30%] md:px-4">
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-slate-500 text-sm mb-1">Program Studi</span>
+                        <strong id="head-prodi" class="text-slate-800 font-medium">-</strong>
+                    </div>
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-slate-500 text-sm mb-1">Kelas</span>
+                        <strong id="head-kelas" class="text-slate-800 font-medium">-</strong>
+                    </div>
+                </div>
+
+                <div class="hidden md:block w-px h-20 bg-[#E8EBF2]"></div>
+
+                <div class="flex flex-col gap-4 w-full md:w-[30%] md:px-4">
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-slate-500 text-sm mb-1">Tahun Akademik</span>
+                        <strong id="head-tahun" class="text-slate-800 font-medium">-</strong>
+                    </div>
+                    <div class="flex flex-col items-start leading-tight">
+                        <span class="text-slate-500 text-sm mb-1.5">Status</span>
+                        <div id="head-status" class="bg-[#dcfce7] text-[#16a34a] px-4 py-0.5 rounded-full text-xs font-semibold tracking-wide">-</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-white border border-slate-200 border-solid rounded-xl shadow-sm mt-6 overflow-hidden">
+                
+                <div class="overflow-x-auto overflow-y-auto max-h-[400px]">
+                    <table class="w-full border-collapse font-sans text-center relative">
+                        
+                        <thead class="sticky top-0 z-10 bg-[#0B4199]">
+                            <tr class="text-white text-sm">
+                                <th rowspan="2" class="py-4 px-3 border-solid border-r border-b border-[#E8EBF2] w-[50px] font-semibold align-middle">No</th>
+                                <th rowspan="2" class="py-4 px-3 border-solid border-r border-b border-[#E8EBF2] font-semibold align-middle">Periode</th>
+                                <th rowspan="2" class="py-4 px-3 border-solid border-r border-b border-[#E8EBF2] w-[60px] font-semibold align-middle">Smt</th>
+                                <th rowspan="2" class="py-4 px-3 border-solid border-r border-b border-[#E8EBF2] w-[100px] font-semibold align-middle">Status</th>
+                                <th rowspan="2" class="py-4 px-3 border-solid border-r border-b border-[#E8EBF2] w-[60px] font-semibold align-middle">SKS</th>
+                                <th rowspan="2" class="py-4 px-3 border-solid border-r border-b border-[#E8EBF2] w-[60px] font-semibold align-middle">IPS</th>
+                                <th colspan="3" class="py-2.5 px-3 border-solid border-r border-b border-[#E8EBF2] font-semibold align-middle">Total SKS</th>
+                                <th colspan="2" class="py-2.5 px-3 border-solid border-r border-b border-[#E8EBF2] font-semibold align-middle">IPK</th>
+                                <th rowspan="2" class="py-4 px-3 border-solid border-b border-[#E8EBF2] w-[80px] font-semibold align-middle">Ket</th>
+                            </tr>
+                            <tr class="text-white text-sm">
+                                <th class="py-3 px-2 border-solid border-r border-b border-[#E8EBF2] w-[85px] font-semibold align-middle">Tempuh</th>
+                                <th class="py-3 px-2 border-solid border-r border-b border-[#E8EBF2] w-[85px] font-semibold align-middle">Total</th>
+                                <th class="py-3 px-2 border-solid border-r border-b border-[#E8EBF2] w-[85px] font-semibold align-middle">Lulus</th>
+                                <th class="py-3 px-2 border-solid border-r border-b border-[#E8EBF2] w-[85px] font-semibold align-middle">Total</th>
+                                <th class="py-3 px-2 border-solid border-r border-b border-[#E8EBF2] w-[85px] font-semibold align-middle">Lulus</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody id="tbody-status-semester">
+                            <tr>
+                                <td colspan="12" class="py-8 text-center text-slate-500">Memuat data semester...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="px-4 pt-4 pb-3.5">
+                    <div class="h-[5px] bg-[#0B4199] rounded-full"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/header.js"></script>
+<script src="../../js/status_sms.js"></script>
+<script src="../../js/logout.js"></script>
+
+</body>
+</html>

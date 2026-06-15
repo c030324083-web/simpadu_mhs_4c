@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+
+    <style>
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body data-page="dashboard" data-role="admin" data-page-title="Dashboard Admin Mahasiswa" data-greeting="Selamat datang" class="page-edit bg-[#fdfdfd] font-sans m-0 p-0 text-slate-800 antialiased overflow-x-hidden">
+
+<div class="app-layout flex min-h-screen w-full overflow-x-hidden">
+    
+    <div class="hidden">/* [BE-NOTE]: JADIKAN SIDEBAR KOMPONEN BLADE: @include('layouts.sidebar') */</div>
+    <div id="sidebar" class="z-20 shrink-0 w-[230px] hidden lg:block"></div>
+
+    <div class="main flex-1 pt-6 pb-4 px-4 sm:pb-6 sm:px-6 md:pb-8 md:px-8 lg:pb-10 lg:px-10 w-0 min-w-0 overflow-y-auto bg-[#f8fafc]">
+
+        <div class="hidden">/* [BE-NOTE]: JADIKAN HEADER KOMPONEN BLADE: @include('layouts.header') */</div>
+        <div id="header"></div>
+
+        <div class="animate-fade-in">
+
+            <div class="cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8 w-full">
+                
+                <div class="card bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow box-border">
+                    <div class="card-top flex items-center justify-start gap-4 mb-4">
+                        <div class="card-icon blue bg-blue-50 text-blue-600 w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider m-0 mb-0.5">Total mahasiswa</h5>
+                            <h2 id="data-total-mahasiswa" class="text-2xl font-bold text-slate-800 m-0 leading-tight">0</h2>
+                        </div>
+                    </div>
+                    <div class="card-bottom flex items-center gap-1.5 border-t border-slate-50 pt-3">
+                        <span class="up blue-text flex items-center text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">↑ 8.2%</span>
+                        <p class="text-[11px] text-slate-400 m-0">Seluruh mahasiswa terdaftar</p>
+                    </div>
+                </div>
+
+                <div class="card bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow box-border">
+                    <div class="card-top flex items-center justify-start gap-4 mb-4">
+                        <div class="card-icon green bg-emerald-50 text-emerald-600 w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider m-0 mb-0.5">Mahasiswa Aktif</h5>
+                            <h2 id="data-mahasiswa-aktif" class="text-2xl font-bold text-slate-800 m-0 leading-tight">0</h2>
+                        </div>
+                    </div>
+                    <div class="card-bottom flex items-center gap-1.5 border-t border-slate-50 pt-3">
+                        <span class="up green-text flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">↑ 6.1%</span>
+                        <p class="text-[11px] text-slate-400 m-0">Aktif dalam perkuliahan</p>
+                    </div>
+                </div>
+
+                <div class="card bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow box-border col-span-1 sm:col-span-2 lg:col-span-1">
+                    <div class="card-top flex items-center justify-start gap-4 mb-4">
+                        <div class="card-icon orange bg-orange-50 text-orange-600 w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="wallet" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider m-0 mb-0.5">Tagihan UKT</h5>
+                            <h2 id="data-tagihan-ukt" class="text-2xl font-bold text-slate-800 m-0 leading-tight">0</h2>
+                        </div>
+                    </div>
+                    <div class="card-bottom flex items-center gap-1.5 border-t border-slate-50 pt-3">
+                        <span class="up orange-text flex items-center text-[11px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">↑ 12%</span>
+                        <p class="text-[11px] text-slate-400 m-0">Belum melakukan pembayaran</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content w-full">
+                <div class="box bg-white p-6 rounded-2xl border border-slate-100 shadow-sm w-full lg:max-w-[50%] box-border">
+                    <div class="box-header flex justify-between items-center mb-5 border-b border-slate-50 pb-3">
+                        <h3 class="text-sm font-bold text-slate-800 m-0 tracking-wide">Jadwal Hari Ini</h3>
+                    </div>
+                    
+                    <div class="hidden">/* [BE-NOTE]: LOGIKA JADWAL UNTUK ADMIN. Gunakan kondisi If-Else (misal @if(count($jadwal) > 0) ). Loop data API ke id="container-jadwal" dan sembunyikan id="jadwal-kosong". */</div>
+                    
+                    <div id="container-jadwal" class="flex flex-col gap-4">
+                        </div>
+
+                    <div id="jadwal-kosong" class="hidden bg-gray-50 border border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                        <i data-lucide="calendar-x" class="w-8 h-8 text-gray-300 mb-2"></i>
+                        <p class="text-[13px] text-gray-500 font-medium m-0">Tidak ada jadwal perkuliahan hari ini.</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div> 
+    </div>
+
+</div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/header.js"></script>
+<script src="../js/dashboard.js"></script> 
+<script src="../js/logout.js"></script>
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>

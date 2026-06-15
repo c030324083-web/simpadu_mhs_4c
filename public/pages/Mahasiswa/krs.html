@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <div class="hidden">/* [BE-NOTE]: Gunakan helper asset() Laravel untuk memuat file eksternal: href="{{ asset('css/sidebar.css') }}" */</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRS Mahasiswa - Dashboard Mahasiswa</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link rel="stylesheet" href="../../css/sidebar.css">
+
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body, html { background-color: #F8FAFC !important; }
+        #sidebar { background-color: transparent !important; border-right: none !important; }
+
+        /* Custom Checkbox */
+        .custom-checkbox {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 2px solid #CBD5E1;
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked {
+            background-color: #3B82F6;
+            border-color: #3B82F6;
+        }
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body 
+    data-page="krs"
+    data-role="mhs"
+    data-page-title="Kartu Rencana Studi"
+    data-greeting="KRS Mahasiswa"
+    data-search="false"
+    class="bg-[#F8FAFC] font-sans m-0 p-0 text-slate-800 antialiased">
+
+    <div class="flex min-h-screen w-full">
+        <div class="hidden">/* [BE-NOTE]: JADIKAN SIDEBAR KOMPONEN BLADE: @include('layouts.sidebar') */</div>
+        <div id="sidebar" class="w-[240px] shrink-0 hidden lg:block"></div>
+
+        <div class="main flex-1 py-6 pr-6 pl-0 overflow-y-scroll bg-[#F8FAFC]">
+            
+            <div class="hidden">/* [BE-NOTE]: JADIKAN HEADER KOMPONEN BLADE: @include('layouts.header') */</div>
+            <div id="header"></div>
+
+            <div id="view-krs-mhs" class="fade-in block space-y-4">
+                
+                <div class="flex justify-between items-center mb-2 pl-1 pr-1">
+                    <div class="flex items-center gap-4">
+                        <label class="text-[15px] font-bold text-slate-900">Periode</label>
+                        <div class="relative">
+                            <div class="hidden">/* [BE-NOTE]: Ikat data periode dari DB */</div>
+                            <!-- [TAMBAHAN ID UNTUK FILTER]: id="periode-select-krs" -->
+                            <select id="periode-select-krs" class="appearance-none pl-4 pr-10 py-1.5 bg-white border border-slate-200 rounded-xl text-[14px] text-slate-600 outline-none cursor-pointer hover:border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium min-w-[140px] shadow-sm">
+                                <option value="2025-genap">2025 Genap</option>
+                                <option value="2025-ganjil">2025 Ganjil</option>
+                                <option value="2024-genap">2024 Genap</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        </div>
+                    </div>
+                    
+                    <button id="btnPilihKelas" class="flex items-center gap-2 px-4 py-2 bg-[#22C55E] hover:bg-[#16A34A] text-white text-[13.5px] font-medium rounded-xl border-none cursor-pointer transition-colors shadow-sm">
+                        <i data-lucide="calendar" class="w-4 h-4 stroke-[2.5]"></i> Pilih Kelas
+                    </button>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center gap-8 justify-start">
+                    
+                    <div class="flex items-center gap-5 w-full md:w-auto min-w-max">
+                        <div class="hidden">/* [BE-NOTE]: Bind foto mhs dari Auth */</div>
+                        <img id="krs-det-img" src="https://ui-avatars.com/api/?name=Aufa+Qonita&background=e0e7ff&color=3b82f6&size=150" alt="Foto Profil" class="w-[75px] h-[75px] rounded-full object-cover shrink-0">
+                        <div class="flex flex-col">
+                            <h2 id="krs-det-nama" class="text-[20px] font-bold text-slate-800 m-0 mb-3 leading-none">Aufa Qonita Salsabila</h2>
+                            <div class="flex flex-col">
+                                <span class="text-[13px] text-slate-500 leading-tight">NIM</span>
+                                <span id="krs-det-nim" class="text-[14px] text-slate-700 leading-tight mt-0.5">C030324011</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block w-px h-[80px] bg-slate-200 shrink-0"></div>
+
+                    <div class="flex flex-col gap-4 w-full md:w-auto min-w-max">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] text-slate-500 leading-tight">Program Studi</span>
+                            <span id="krs-det-prodi" class="text-[14.5px] text-slate-700 leading-tight mt-0.5">D3 Teknik Informatika</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[13px] text-slate-500 hobbies leading-tight">Kelas</span>
+                            <span id="krs-det-kelas" class="text-[14.5px] text-slate-700 leading-tight mt-0.5">TI-4C</span>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block w-px h-[80px] bg-slate-200 shrink-0"></div>
+
+                    <div class="flex flex-col gap-4 w-full md:w-auto min-w-max">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] text-slate-500 leading-tight">Dosen Pembimbing</span>
+                            <span id="krs-det-dosen" class="text-[14.5px] text-slate-700 leading-tight mt-0.5">Herlinawati, S.Ag., M.Pd.</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="text-[13px] text-slate-500 leading-tight mb-1">Status KRS</span>
+                            <span id="badgeStatusMain" class="bg-[#F1F5F9] text-[#64748B] px-2.5 py-0.5 rounded text-[11px] font-semibold w-fit border border-[#e2e8f0]">Belum Mengisi</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-slate-100">
+                        <h3 class="text-[15px] font-bold text-slate-800 m-0">Daftar Matakuliah yang Diambil</h3>
+                    </div>
+                    
+                    <table class="w-full text-left whitespace-nowrap">
+                        <thead class="bg-[#F8FAFF] text-slate-800 text-[12px] font-semibold border-b border-[#EEF2FF]">
+                            <tr>
+                                <th class="py-3 px-5 font-semibold w-[15%]">Kode MK</th>
+                                <th class="py-3 px-5 font-semibold w-[35%]">Matakuliah</th>
+                                <th class="py-3 px-5 font-semibold text-center w-[10%]">SKS</th>
+                                <th class="py-3 px-5 font-semibold text-center w-[15%]">Jadwal</th>
+                                <th class="py-3 px-5 font-semibold w-[25%]">Dosen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="krs-table-main" class="text-[13px] text-slate-800 font-normal">
+                            <!-- Diisi secara dinamis oleh JS -->
+                            <tr><td colspan="5" class="py-8 text-center text-slate-400">Belum ada kelas yang dipilih untuk periode ini.</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="px-6 py-4 bg-[#EEF2FF] border-t border-slate-100 flex justify-center mx-5 mb-5 rounded-xl mt-4">
+                        <div class="flex items-center gap-2">
+                            <span id="krs-det-totalsks-main" class="text-[14px] font-bold text-blue-600 tracking-wide">Total 0 SKS</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="krsModalOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        
+        <div id="modalValidated" class="bg-white rounded-2xl w-full max-w-4xl shadow-xl flex flex-col hidden max-h-[90vh]">
+            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white rounded-t-2xl sticky top-0 z-10">
+                <h2 class="text-xl font-bold text-slate-800 m-0">Pengisian Kartu Rencana Studi</h2>
+                <button class="close-krs-modal text-slate-400 hover:text-slate-700 transition cursor-pointer bg-transparent border-none p-1">
+                    <i data-lucide="x" class="w-6 h-6 stroke-[3]"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto">
+                <div class="grid grid-cols-4 gap-4 bg-[#F8FAFC] border border-slate-200 rounded-2xl p-5 mb-5">
+                    <div>
+                        <span class="block text-[12px] font-semibold text-slate-800 mb-1">Semester Saat Ini</span>
+                        <span class="text-[14px] text-slate-600">Semester 4</span>
+                    </div>
+                    <div>
+                        <span class="block text-[12px] font-semibold text-slate-800 mb-1">Batas Total SKS</span>
+                        <span class="text-[14px] text-slate-600">24 SKS</span>
+                    </div>
+                    <div>
+                        <span class="block text-[12px] font-semibold text-slate-800 mb-1">Periode akademik</span>
+                        <span class="text-[14px] text-slate-600">2025 Genap</span>
+                    </div>
+                    <div>
+                        <span class="block text-[12px] font-semibold text-slate-800 mb-1">Status</span>
+                        <span class="text-[14px] text-slate-600">KRS sudah divalidasi</span>
+                    </div>
+                </div>
+
+                <div class="bg-[#EFF6FF] border border-[#DBEAFE] rounded-xl p-4 mb-6 flex items-start">
+                    <p class="text-[13px] text-slate-700 m-0 leading-relaxed">
+                        KRS <strong class="text-slate-800">Telah Divalidasi</strong> dan tidak bisa diubah. Untuk membatalkan validasi KRS silakan menghubungi Pembimbing Akademik terkait.
+                    </p>
+                </div>
+
+                <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                    <div class="text-center py-3 border-b border-slate-200 bg-white">
+                        <h3 class="text-[14px] font-bold text-slate-800 m-0">KRS Tersimpan</h3>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-white text-slate-700 text-[13px] font-bold border-b border-slate-100">
+                            <tr>
+                                <th class="py-3 px-5 w-[60%]">Nama Kelas</th>
+                                <th class="py-3 px-5 text-center w-[30%]">Jadwal</th>
+                                <th class="py-3 px-5 text-center w-[10%]">SKS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-validated-body" class="text-[13px] text-slate-600 font-normal">
+                            <!-- Diisi secara dinamis oleh JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-[#F8FAFC] border-t border-slate-100 rounded-b-2xl">
+                <div class="w-full bg-[#E0E7FF] text-[#4F46E5] text-center py-2.5 rounded-xl font-bold text-[14px]">
+                    <span id="validated-total-sks">Total 0 SKS</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalSelectClass" class="bg-white rounded-2xl w-full max-w-4xl shadow-xl flex flex-col hidden max-h-[90vh]">
+            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white rounded-t-2xl sticky top-0 z-10">
+                <h2 class="text-xl font-bold text-slate-800 m-0">Pengisian Kartu Rencana Studi</h2>
+                <button class="close-krs-modal text-slate-400 hover:text-slate-700 transition cursor-pointer bg-transparent border-none p-1">
+                    <i data-lucide="x" class="w-6 h-6 stroke-[3]"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto">
+                <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                    <div class="text-center py-3 border-b border-slate-200 bg-white">
+                        <h3 class="text-[14px] font-bold text-slate-800 m-0">Pilih Kelas</h3>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-[#F8FAFC] text-slate-700 text-[13px] font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="py-3 px-5 w-[55%]">Nama Kelas</th>
+                                <th class="py-3 px-5 w-[25%] text-center">Jadwal</th>
+                                <th class="py-3 px-5 w-[10%] text-center">SKS</th>
+                                <th class="py-3 px-5 w-[10%] text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-select-body" class="text-[13px] text-slate-600 font-normal">
+                            <!-- Diisi secara dinamis oleh JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="w-full bg-[#EFF6FF] text-[#3B82F6] text-center py-2.5 rounded-xl font-bold text-[14px] mt-4">
+                    <span id="select-total-sks">Total 0 SKS</span>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-white border-t border-slate-100 flex justify-end gap-3 rounded-b-2xl">
+                <button class="close-krs-modal px-6 py-2.5 bg-white border border-slate-300 text-slate-600 font-medium rounded-xl hover:bg-slate-50 transition cursor-pointer text-[14px]">Batal</button>
+                <button id="btnOpenConfirm" class="px-6 py-2.5 bg-[#3B82F6] text-white font-medium rounded-xl hover:bg-blue-600 transition cursor-pointer text-[14px] border-none">Simpan KRS</button>
+            </div>
+        </div>
+
+        <div id="modalConfirm" class="bg-white rounded-3xl w-full max-w-[450px] shadow-2xl flex flex-col items-center p-6 hidden">
+            <div class="w-[70px] h-[70px] bg-[#FEF3C7] rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="alert-circle" class="w-10 h-10 text-[#F59E0B] stroke-[2.5]"></i>
+            </div>
+            
+            <h2 class="text-[22px] font-bold text-slate-800 m-0 mb-4">Simpan KRS?</h2>
+            
+            <div class="bg-[#FFF8F1] border border-[#FED7AA] rounded-2xl p-4 mb-6 w-full relative overflow-hidden">
+                <h4 class="text-[13px] font-bold text-[#EA580C] m-0 mb-3">Perhatikan :</h4>
+                <ul class="m-0 p-0 list-none space-y-3">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="send" class="w-5 h-5 text-[#F59E0B] shrink-0 mt-0.5"></i>
+                        <span class="text-[13px] text-slate-700 leading-snug">Proses ini akan mengirim KRS untuk diajukan ke dosen pembimbing.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="lock" class="w-5 h-5 text-[#F59E0B] shrink-0 mt-0.5"></i>
+                        <span class="text-[13px] text-slate-700 leading-snug">Kelas yang dipilih tidak dapat diubah setelah KRS disimpan.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex gap-3 w-full">
+                <button id="btnCancelConfirm" class="flex-1 py-3 bg-white border border-slate-300 text-slate-700 font-medium text-[14px] rounded-xl hover:bg-slate-50 transition cursor-pointer">Batal</button>
+                <button id="btnSubmitKRS" class="flex-1 py-3 bg-[#3B82F6] text-white font-medium text-[14px] rounded-xl hover:bg-blue-600 transition cursor-pointer border-none shadow-md shadow-blue-500/30">Ya, Simpan dan Ajukan</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../../js/sidebar.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/logout.js"></script>
+    
+    <!-- [PENTING]: Script Global dipanggil sebelum script spesifik KRS -->
+    <script src="../../js/global_filter_sort.js"></script>
+    <script src="../../js/krs_mhs.js"></script> 
+</body>
+</html>
