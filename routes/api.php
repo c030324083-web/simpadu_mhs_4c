@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Mobile\MobileAdminDashboardController;
 use App\Http\Controllers\Api\Web\PengaturanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Web\AuthController;
@@ -43,7 +44,7 @@ Route::middleware('check.central.auth')->group(function () {
 
         // Endpoint Dashboard Admin
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'dashboardAdmin']);
-        Route::get('/admin/data-mahasiswa', [AdminDashboardController::class, '']);
+        Route::get('/admin/data-mahasiswa', [AdminDataMahasiswaController::class, 'index']);
         Route::get('/admin/presensi', [AdminDashboardController::class, 'dataMahasiswa']);
         Route::get('/admin/krs', [AdminDashboardController::class, 'dataMahasiswa']);
         Route::get('/admin/khs', [AdminDashboardController::class, 'dataMahasiswa']);
@@ -57,7 +58,7 @@ Route::middleware('check.central.auth')->group(function () {
 
     // Endpoint untuk Mobile
     Route::prefix('mobile')->group(function () {
-        Route::get('', []);
+        Route::get('/admin/dashboard', [MobileAdminDashboardController::class,'dashboardAdmin']);
     });
 
     // Endpoint untuk Service lain

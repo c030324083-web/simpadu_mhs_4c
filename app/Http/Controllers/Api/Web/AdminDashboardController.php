@@ -23,11 +23,11 @@ class AdminDashboardController extends Controller
             $totalMahasiswa = Mahasiswa::count();
 
             // Mengambil ID Status yang memiliki nama/kode 'Aktif'
-            $statusAktif = StatusMahasiswa::where('nama_status', 'Aktif')->first();
+            $statusAktif = StatusMahasiswa::where('NAMA_STATUS_MHS', 'Aktif')->first();
             
             $mahasiswaAktif = 0;
             if ($statusAktif) {
-                $mahasiswaAktif = Mahasiswa::where('status_mahasiswa_id', $statusAktif->id)->count();
+                $mahasiswaAktif = Mahasiswa::where('ID_STATUS_MHS', $statusAktif->id)->count();
             }
 
             // 2. Mengambil Token Bearer dari Request Frontend
@@ -39,6 +39,9 @@ class AdminDashboardController extends Controller
             $totalTagihan = 0;
             try {
                 $responseUKT = Http::withToken($token)
+                    ->withHeaders([
+                        'X-API-Key'=> 'kel4apikey'
+                    ])
                     ->timeout(5)
                     ->get($urlKelompok4 . '/ext/tagihan');
 
@@ -46,7 +49,7 @@ class AdminDashboardController extends Controller
                     $dataUKT = $responseUKT->json();
                     if (isset($dataUKT['data']) && is_array($dataUKT['data'])) {
                         foreach ($dataUKT['data'] as $item) {
-                            if (($item['status'] ?? '') === 'Belum Lunas') {
+                            if (($item['status_tagihan'] ?? '') === 'Belum Bayar') {
                                 $totalTagihan += (float) ($item['nominal'] ?? 0);
                             }
                         }

@@ -1,31 +1,27 @@
 /**
  * =========================================================================================
- * SCRIPT DASHBOARD ADMIN SIMPADU (INTEGRATED WITH LARAVEL BACKEND)
+ * SCRIPT DASHBOARD ADMIN - SIMPADU (INTEGRATED)
  * =========================================================================================
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Deteksi Role (Admin / Mahasiswa)
     const role = document.body.getAttribute('data-role');
-    const token = localStorage.getItem('token'); // Ambil token auth dari storage login
+    const token = localStorage.getItem('token'); 
 
-    // Jika user adalah admin dan token tersedia, load data asli dari backend
-    if (role === 'admin' && token) {
+    // Sinkronkan pengecekan role sesuai response server terbaru ('admin_mahasiswa')
+    if ((role === 'admin_mahasiswa' || role === 'admin') && token) {
         loadUnifiedAdminDashboard(token);
+    } else {
+        console.error("Akses ditolak atau token tidak ditemukan.");
     }
 });
 
-/**
- * =========================================================================================
- * INTEGRASI SINGLE ENDPOINT - ADMIN DASHBOARD CONTROLLER
- * =========================================================================================
- */
 async function loadUnifiedAdminDashboard(token) {
     const container = document.getElementById('container-jadwal');
     
     try {
-        // Panggil endpoint API unified dashboard admin yang telah dibuat di backend Laravel
-        const response = await fetch('/api/web/dashboard/admin', {
+        // PERBAIKAN: Sesuaikan endpoint URL dengan rute Laravel Anda (tambahkan prefix /api jika di dalam routes/api.php)
+        const response = await fetch('/api/web/admin/dashboard', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -42,12 +38,9 @@ async function loadUnifiedAdminDashboard(token) {
 
         const payload = result.data;
 
-        // --------------------------------------------------------
-        // 1. BINDING DATA STATISTIK UTAMA (INTERNAL & KELOMPOK 4)
-        // --------------------------------------------------------
+        // 1. BINDING DATA STATISTIK UTAMA ADMIN
         if (document.getElementById('data-total-mahasiswa')) {
             document.getElementById('data-total-mahasiswa').textContent = payload.total_mahasiswa.toLocaleString('id-ID');
-            // Nilai persentase perkembangan tren (opsional, bisa di-hardcode atau dilempar dari backend)
             updateCardPercentage('blue', 4.2); 
         }
 
@@ -57,21 +50,13 @@ async function loadUnifiedAdminDashboard(token) {
         }
 
         if (document.getElementById('data-tagihan-ukt')) {
-            // Menampilkan nominal total rupiah tagihan yang belum lunas (Kelompok 4)
-            // Jika format di HTML Anda membutuhkan nominal rupiah, gunakan format mata uang:
+            // Memformat total nominal uang rupiah dari Kelompok 4
             const formatRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(payload.total_tagihan_ukt);
-            
-            // Atau jika hanya menampilkan total jumlah orang/tagihan sesuai layout awal, gunakan toLocaleString:
-            document.getElementById('data-tagihan-ukt').textContent = payload.total_tagihan_ukt > 100000 
-                ? formatRupiah 
-                : payload.total_tagihan_ukt.toLocaleString('id-ID');
-
+            document.getElementById('data-tagihan-ukt').textContent = formatRupiah;
             updateCardPercentage('orange', 12.4);
         }
 
-        // --------------------------------------------------------
         // 2. RENDERING DATA JADWAL PERKULIAHAN HARI INI (KELOMPOK 1)
-        // --------------------------------------------------------
         if (!container) return;
         container.innerHTML = '';
 
@@ -85,25 +70,20 @@ async function loadUnifiedAdminDashboard(token) {
             return;
         }
 
-        // Array pembantu untuk variasi warna box perkuliahan secara berurutan
         const daftarWarna = ['blue', 'emerald', 'purple'];
 
         listJadwal.forEach((jadwal, index) => {
-            // Tentukan index warna agar berputar (blue -> emerald -> purple)
             const varianWarna = daftarWarna[index % daftarWarna.length];
-            
             let colorHex = varianWarna === 'emerald' ? '#10b981' : (varianWarna === 'purple' ? '#a855f7' : '#1e56df');
             let colorBg = varianWarna === 'emerald' ? '#ecfdf5' : (varianWarna === 'purple' ? '#faf5ff' : '#eff6ff');
             let colorText = varianWarna === 'emerald' ? '#047857' : (varianWarna === 'purple' ? '#7e22ce' : '#1d4ed8');
 
-            // Ekstraksi data safety mapping dari API Kelompok 1
+            // Pemetaan nama field sesuai data master Kelompok 1
             const namaMatkul = jadwal.kurikulum_mk?.mata_kuliah?.nama_mk || jadwal.mata_kuliah?.nama_mk || 'Mata Kuliah';
             const namaKelas = jadwal.kelas?.kelas_nama || jadwal.kelas?.nama_kelas || 'Kelas';
             const jamMulai = (jadwal.waktu_mulai ?? '08:00:00').substring(0, 5);
             const jamSelesai = (jadwal.waktu_selesai ?? '10:00:00').substring(0, 5);
             const namaRuang = jadwal.ruang?.nama_ruang || 'Ruangan';
-            
-            // Gunakan hari dari meta data server
             const teksTanggal = result.meta.hari_ini; 
 
             const jadwalCard = `
@@ -127,45 +107,22 @@ async function loadUnifiedAdminDashboard(token) {
             container.insertAdjacentHTML('beforeend', jadwalCard);
         });
 
-        // Inisialisasi ulang icon Lucide setelah HTML dimasukkan secara dinamis
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
     } catch (error) {
-        console.error('Error memuat data dashboard terpadu:', error);
+        console.error('Error memuat data dashboard admin:', error);
         if (container) {
-            container.innerHTML = '<p class="text-xs text-red-500 text-center py-4">Gagal mensinkronisasikan jadwal kuliah hari ini dengan server pusat.</p>';
+            container.innerHTML = '<p class="text-xs text-red-500 text-center py-4">Gagal sinkronisasi data dengan server lokal.</p>';
         }
     }
 }
 
-/**
- * =========================================================================================
- * FUNGSI BANTU UTK UPDATE PERSENTASE CARD (TETAP DIPERTAHANKAN)
- * =========================================================================================
- */
 function updateCardPercentage(colorClass, value) {
     const numericValue = parseFloat(value) || 0;
     const isPositive = numericValue >= 0;
     const arrow = isPositive ? '↑' : '↓';
-    
-    let textColor = '';
-    let bgColor = '';
-    
-    if (isPositive) {
-        if (colorClass === 'blue') {
-            textColor = 'text-blue-600';
-            bgColor = 'bg-blue-50';
-        } else if (colorClass === 'green') {
-            textColor = 'text-emerald-600';
-            bgColor = 'bg-emerald-50';
-        } else if (colorClass === 'orange') {
-            textColor = 'text-orange-600';
-            bgColor = 'bg-orange-50';
-        }
-    } else {
-        textColor = 'text-red-600';
-        bgColor = 'bg-red-50';
-    }
+    let textColor = isPositive ? (colorClass === 'blue' ? 'text-blue-600' : (colorClass === 'green' ? 'text-emerald-600' : 'text-orange-600')) : 'text-red-600';
+    let bgColor = isPositive ? (colorClass === 'blue' ? 'bg-blue-50' : (colorClass === 'green' ? 'bg-emerald-50' : 'bg-orange-50')) : 'bg-red-50';
     
     const cardIcon = document.querySelector(`.card-icon.${colorClass}`);
     if (cardIcon) {
