@@ -17,7 +17,7 @@ class ApiMahasiswaController extends Controller
     {
         $mahasiswa = Mahasiswa::with(['jenisKelamin' => function ($query) {
             $query->select('id_jk', 'nama_jk');
-        }])->get(['nim', 'nama', 'id_jk']);
+        }])->get(['nim', 'nama', 'id_jk', 'id_ukt_kategori', 'id_prodi', 'id_status_mhs']);
         return response()->json([
             'success' => true,
             'message' => 'Daftar mahasiswa berhasil diambil',

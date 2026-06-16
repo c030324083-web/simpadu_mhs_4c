@@ -24,15 +24,15 @@ Route::middleware('check.central.auth')->group(function () {
     // Endpoint untuk Frontend
     Route::prefix('web')-> group(function () {
     
-        // Endpoint Jenis Kelamin
+        // Jenis Kelamin
         Route::get('/jenis-kelamin', [JenisKelaminController::class, 'index']);
         Route::get('/jenis-kelamin/{id}', [JenisKelaminController::class, 'show']);
 
-        // Endpoint Status Mahasiswa
+        // Status Mahasiswa
         Route::get('/status-mhs', [StatusMahasiswaController::class, 'index']);
         Route::get('/status-mhs/{id}', [StatusMahasiswaController::class, 'show']);
 
-        // Endpoint Mahasiswa
+        // Mahasiswa
         Route::get('mahasiswa', [AdminDataMahasiswaController::class, 'Index']);
         Route::get('mahasiswa/search/{nama}', [AdminDataMahasiswaController::class,'searchByName']);
         Route::get('mahasiswa/status/{id_status_mhs}', [AdminDataMahasiswaController::class,'filterByStatus']);
@@ -42,7 +42,7 @@ Route::middleware('check.central.auth')->group(function () {
         Route::put('mahasiswa/{nim}', [AdminDataMahasiswaController::class, 'Update']);
         Route::delete('mahasiswa/{nim}', [AdminDataMahasiswaController::class, 'Destroy']);
 
-        // Endpoint Dashboard Admin
+        // Dashboard Admin
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'dashboardAdmin']);
         Route::get('/admin/data-mahasiswa', [AdminDataMahasiswaController::class, 'index']);
         Route::get('/admin/presensi', [AdminDashboardController::class, 'dataMahasiswa']);
@@ -50,14 +50,16 @@ Route::middleware('check.central.auth')->group(function () {
         Route::get('/admin/khs', [AdminDashboardController::class, 'dataMahasiswa']);
         Route::get('/admin/jadwal-kuliah', [AdminDashboardController::class, 'dataMahasiswa']);
 
-        // Endpoint Dashboard Mahasiswa
+        // Dashboard Mahasiswa
 
-        // Endpoint Pengaturan
+        // Pengaturan
         Route::get('/pengaturan', [PengaturanController::class,'updateProfil']);
     });
 
     // Endpoint untuk Mobile
     Route::prefix('mobile')->group(function () {
+
+        // Dashboard Admin
         Route::get('/admin/dashboard', [MobileAdminDashboardController::class,'dashboardAdmin']);
     });
 
