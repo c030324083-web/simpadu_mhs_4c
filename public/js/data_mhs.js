@@ -3,6 +3,7 @@
  * SIMPADU - Front-End UI Interactions (Riil API Integration dengan Master Prodi Kelompok 1)
  * File: data_mhs.js
  * =========================================================================================
+ * PERBAIKAN: Menyesuaikan pembacaan JSON Response dari Backend Non-Paginate (Scrollable)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,30 +33,43 @@ document.addEventListener("DOMContentLoaded", () => {
     let listMasterProdi = [];
 
     // ========================================================================
-    // OTOMATISASI STYLE SCROLLABLE TBODY (Agar tabel bisa di-scroll tanpa jebol)
+    // STRATEGI SCROLLABLE CONTAINER (Mencegah Baris Menumpuk & Berantakan)
     // ========================================================================
     if (tbody) {
         const tableElement = tbody.closest('table');
         if (tableElement) {
-            // Mencegah struktur tabel berantakan saat tbody diubah menjadi block/scrollable
-            tableElement.style.borderCollapse = 'collapse';
+            // 1. Kembalikan display table & tbody ke setelan bawaan browser agar kolom sinkron
             tableElement.style.width = '100%';
-            
-            // Set header tabel tetap berada di atas (sticky) saat di-scroll
+            tableElement.style.borderCollapse = 'collapse';
+            tbody.style.display = 'table-row-group'; 
+            tbody.style.maxHeight = 'none';
+            tbody.style.overflowY = 'visible';
+
+            // 2. Buat element pembungkus (wrapper) jika belum ada
+            let wrapper = tableElement.parentElement;
+            if (!wrapper.classList.contains('table-scroll-wrapper')) {
+                wrapper = document.createElement('div');
+                wrapper.className = 'table-scroll-wrapper';
+                
+                // Atur tinggi scroll box di sini secara aman
+                wrapper.style.maxHeight = '450px'; 
+                wrapper.style.overflowY = 'auto';
+                wrapper.style.position = 'relative';
+                
+                // Bungkus tabel ke dalam wrapper
+                tableElement.parentNode.insertBefore(wrapper, tableElement);
+                wrapper.appendChild(tableElement);
+            }
+
+            // 3. Buat Header (thead) Menjadi Sticky di Bagian Atas Container
             const theadThs = tableElement.querySelectorAll('thead th');
             theadThs.forEach(th => {
                 th.style.position = 'sticky';
                 th.style.top = '0';
-                th.style.zIndex = '10';
-                th.style.backgroundColor = '#f8fafc'; // Menyesuaikan warna latar header (bg-slate-50)
+                th.style.zIndex = '20';
+                th.style.backgroundColor = '#f8fafc'; // Menjaga latar belakang tetap solid bg-slate-50
             });
         }
-
-        // Terapkan pembatasan tinggi maksimal pada body tabel mahasiswa
-        tbody.style.display = 'block';
-        tbody.style.maxHeight = '450px'; // Silakan sesuaikan tinggi pixel sesuai keinginan Anda
-        tbody.style.overflowY = 'auto';
-        tbody.style.width = '100%';
     }
 
     // =========================================================
@@ -66,6 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(API_PRODI_KEL1, {
                 method: "GET",
                 headers: {
+                    // TAMBAHKAN BARIS INI: Kirim token agar lolos dari Unauthenticated kelompok 1
+                    "Authorization": `Bearer ${BEARER_TOKEN}`, 
                     "Accept": "application/json"
                 }
             });
@@ -81,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) {
             console.warn("Gagal mengambil API Prodi Kelompok 1. Mengaktifkan fallback lokal riil:", error);
-            // DATA FALLBACK LOKAL YANG DISINKRONKAN DENGAN REAL ID API KELOMPOK 1
             listMasterProdi = [
                 {
                     "id_prodi": 1,
@@ -140,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ];
         }
 
-        // --- RENDER KE DROPDOWN FILTER UTAMA HALAMAN ---
         if (selectProdi) {
             selectProdi.innerHTML = '<option value="semua">Semua Program Studi</option>';
             listMasterProdi.forEach(p => {
@@ -148,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // --- RENDER KE DROPDOWN MODAL TAMBAH MAHASISWA ---
         if (modalProdi) {
             modalProdi.innerHTML = '<option value="">Pilih Program Studi</option>';
             listMasterProdi.forEach(p => {
@@ -197,15 +210,19 @@ document.addEventListener("DOMContentLoaded", () => {
             if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") {
                 params.append("id_prodi", selectProdi.value);
             }
-            if (selectKelas && selectKelas.value !== "semua" && selectKelas.value !== "") {
+            
+            // PENGAMAN: Hanya kirim filter semester jika elemennya ADA dan nilainya VALID (bukan "semua" atau "")
+            if (selectKelas && selectKelas.value && selectKelas.value !== "semua" && selectKelas.value.trim() !== "") {
                 params.append("semester", selectKelas.value); 
             }
+            
             if (selectSort && selectSort.value !== "") {
                 const [sortBy, sortDir] = selectSort.value.split("-");
                 if (sortBy) params.append("sort_by", sortBy);
                 if (sortDir) params.append("sort_dir", sortDir);
             }
 
+            // Lakukan Fetch ke Backend
             const response = await fetch(`${API_URL}?${params.toString()}`, {
                 method: "GET",
                 headers: {
@@ -216,9 +233,19 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const result = await response.json();
+            
+            // INTIP DI KONSOL: Tekan F12 di browser dan lihat apa isi log ini
+            printDataLog(result);
 
             if (response.ok && result.success) {
-                const listMahasiswa = result.data.data || [];
+                // Antisipasi jika data berupa single object atau langsung array murni
+                let listMahasiswa = [];
+                if (Array.isArray(result.data)) {
+                    listMahasiswa = result.data;
+                } else if (result.data && typeof result.data === 'object') {
+                    listMahasiswa = Object.values(result.data); // Konversi ke array jika berupa objek ber-key
+                }
+
                 renderTable(listMahasiswa);
             } else {
                 console.error("Gagal memuat data dari API:", result.message);
@@ -227,6 +254,17 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error("Terjadi kesalahan jaringan/sistem:", error);
             renderTable([]);
+        }
+    }
+
+    // Fungsi bantu untuk mempermudah debugging Anda di F12
+    function printDataLog(result) {
+        if (result && result.data) {
+            console.log("=== ISI DATA DARI BACKEND ===");
+            console.log("Jumlah data ditemukan:", Array.isArray(result.data) ? result.data.length : Object.keys(result.data).length);
+            console.log("Konten data:", result.data);
+        } else {
+            console.log("=== BACKEND TIDAK MENGEMBALIKAN DATA (NULL/EMPTY) ===");
         }
     }
 
@@ -244,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             tbody.innerHTML = `
-                <tr style="display: table; width: 100%;">
+                <tr>
                     <td colspan="6" class="py-20 text-center">
                         <div class="flex flex-col items-center justify-center animate-fade-in">
                             <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
@@ -264,25 +302,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         data.forEach((mhs) => {
             const tr = document.createElement("tr");
-            // Set agar row bertingkah laku normal layaknya tabel di dalam block container
-            tr.style.display = 'table';
-            tr.style.width = '100%';
-            tr.style.tableLayout = 'fixed';
             tr.className = "border-b border-slate-50 hover:bg-slate-50 transition";
             
             const isAktif = mhs.status && mhs.status.toLowerCase() === 'aktif';
             const badgeClass = isAktif ? "bg-[#DCFCE7] text-[#22C55E]" : "bg-red-100 text-red-600";
 
             let namaProdiReal = mhs.program_studi;
-            
             const foreignKeyProdi = mhs.id_prodi || mhs.ID_PRODI;
+
             if (mhs.program_studi === "Prodi Belum Diatur" && foreignKeyProdi) {
                 const temukanProdi = listMasterProdi.find(p => p.id_prodi == foreignKeyProdi);
                 if (temukanProdi) {
                     namaProdiReal = temukanProdi.nama_prodi;
                 }
             } else if (mhs.program_studi === "Prodi Belum Diatur") {
-                // Skenario tambahan apabila database lokal masih kosong
                 namaProdiReal = "Teknik Informatika"; 
             }
 
@@ -333,7 +366,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Eksekusi penarikan data master saat dokumen siap
     loadMasterProdiDropdowns();
 
     // =========================================================

@@ -33,12 +33,9 @@ class AdminDataMahasiswaController extends Controller
             }
     
             // 2. Inisialisasi Query Builder (Sesuaikan dengan foreign key HURUF KAPITAL)
-            // Perbaikan: relasi disesuaikan dengan kolom ID_STATUS_MHS milik database Anda
             $query = Mahasiswa::with([
                 'statusMahasiswa' => function($q) {
-                    // Pastikan select kolom primary key tabel status dan nama statusnya
-                    // Gantilah 'id' di bawah jika primary key tabel status Anda bukan 'id' (misal 'ID_STATUS_MHS')
-                    $q->select('id', 'nama_status'); 
+                    $q->select('id_status_mhs', 'nama_status_mhs'); 
                 }
             ]);
     
@@ -65,7 +62,7 @@ class AdminDataMahasiswaController extends Controller
                     ->filter(function ($item) use ($semesterTarget) {
                         return ($item['kelas']['semester'] ?? '') == $semesterTarget;
                     })
-                    ->pluck('nim') // Ambil nim dari objek eksternal
+                    ->pluck('nim') 
                     ->unique()
                     ->toArray();
     
@@ -75,44 +72,46 @@ class AdminDataMahasiswaController extends Controller
     
             // 6. FITUR SORTING (Gunakan nama kolom HURUF KAPITAL untuk database)
             $sortByInput = strtolower($request->query('sort_by', 'nim'));
-            $sortBy = ($sortByInput === 'nama') ? 'NAMA' : 'NIM'; // Map ke huruf kapital
+            $sortBy = ($sortByInput === 'nama') ? 'NAMA' : 'NIM'; 
             $sortDir = strtolower($request->query('sort_dir', 'asc')) === 'desc' ? 'desc' : 'asc';
     
             $query->orderBy($sortBy, $sortDir);
     
-            // 7. Eksekusi Pagination
-            $mahasiswaLokal = $query->paginate(10);
+            // 7. Eksekusi Pengambilan Data (Menggunakan get() untuk scrollable)
+            $mahasiswaLokal = $query->get();
     
-            // 8. Transformasi Data: Menghubungkan Huruf Kapital Lokal ke JSON Output Semula
-            $transformedData = $mahasiswaLokal->getCollection()->map(function ($mhs) use ($dataMasterKelas) {
+            // 8. Transformasi Data (LANGSUNG gunakan ->map() tanpa getCollection)
+            $transformedData = $mahasiswaLokal->map(function ($mhs) use ($dataMasterKelas) {
                 // Cari data kecocokan di API eksternal berdasarkan NIM mahasiswa lokal
                 $kelasEksternal = collect($dataMasterKelas)->first(function ($item) use ($mhs) {
                     return ($item['nim'] ?? '') == $mhs->NIM;
                 });
     
                 return [
-                    // PERBAIKAN: Membaca data lokal menggunakan HURUF KAPITAL sesuai isi database Anda
                     'nim'           => $mhs->NIM,
                     'nama'          => $mhs->NAMA,
                     'email'         => $mhs->EMAIL,
-                    'status'        => $mhs->statusMahasiswa->nama_status ?? ($mhs->ID_STATUS_MHS == 1 ? 'Aktif' : 'Tidak Aktif'),
-                    
-                    // Data hasil perkawinan dari API Kelompok 1 (berdasarkan struktur kelas-master terbaru)
+                    'status'        => $mhs->statusMahasiswa->nama_status_mhs ?? ($mhs->ID_STATUS_MHS == 1 ? 'Aktif' : 'Tidak Aktif'),
                     'program_studi' => $kelasEksternal['kelas']['kelas_nama'] ?? 'Prodi Belum Diatur',
                     'semester'      => isset($kelasEksternal['kelas']['semester']) ? (int)$kelasEksternal['kelas']['semester'] : 5,
                 ];
             });
     
-            // Kembalikan koleksi data yang sudah diperbaiki ke paginator
-            $mahasiswaLokal->setCollection($transformedData);
-    
             return response()->json([
                 'success' => true,
                 'message' => 'Daftar mahasiswa berhasil difilter dan diurutkan',
-                'data'    => $mahasiswaLokal
+                'data'    => $transformedData->values()->all() 
             ], 200);
-    
+
+        // =================================================================
+        // TAMBAHAN: Blok Catch Global untuk Menangkap Error Tak Terduga
+        // =================================================================
         } catch (\Exception $e) {
+            // Mencatat detail error asli ke file storage/logs/laravel.log untuk mempermudah debugging Anda
+            Log::error('Gagal memproses fungsi Index Mahasiswa: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memproses data: ' . $e->getMessage()
