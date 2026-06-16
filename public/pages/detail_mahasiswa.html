@@ -30,20 +30,20 @@
     </style>
 </head>
 
-<body class="page-detail bg-[#fdfdfd] font-sans m-0 p-0 text-slate-800 antialiased" 
+<body class="page-detail bg-[#fdfdfd] font-sans m-0 p-0 text-slate-800 antialiased overflow-x-hidden" 
     data-page="mahasiswa" 
     data-role="admin"
     data-search="false"
     data-page-title="Data Mahasiswa"
     data-greeting="Detail Data Mahasiswa">
 
-<div class="container">
-    
-    <div id="sidebar"></div>
+    <div class="flex w-full min-h-screen">
+        
+        <div id="sidebar" class="shrink-0"></div>
 
-    <div class="main animate-fade-in">
+        <div class="main animate-fade-in flex-1 min-w-0 bg-[#f8fafc] p-6">
 
-        <div id="header"></div>
+        <div id="header" class="mb-6"></div>
 
         <div class="back" onclick="goBack()">
             <i data-lucide="arrow-left"></i>
@@ -102,7 +102,7 @@
                     <i data-lucide="map-pin"></i> Domisili
                 </div>
                 <div class="tab" onclick="showTab('orangtua')">
-                    <i data-lucide="users"></i> Orang Tua/Wali
+                    <i data-lucide="users"></i> Orang Tua
                 </div>
                 <div class="tab" onclick="showTab('sekolah')">
                     <i data-lucide="graduation-cap"></i> Sekolah
@@ -127,29 +127,23 @@
                 <div class="detail-title">Domisili</div>
                 <div class="detail-grid">
                     <div class="detail-item"><span class="label">Alamat</span><span class="value" id="det-alamat">-</span></div>
-                    <div class="detail-item"><span class="label">Kecamatan</span><span class="value" id="det-kecamatan">-</span></div>
                     <div class="detail-item"><span class="label">Provinsi</span><span class="value" id="det-provinsi">-</span></div>
-                    <div class="detail-item"><span class="label">Kelurahan/Desa</span><span class="value" id="det-kelurahan">-</span></div>
                     <div class="detail-item"><span class="label">Kabupaten/Kota</span><span class="value" id="det-kabkota">-</span></div>
                     <div class="detail-item"><span class="label">Kode Pos</span><span class="value" id="det-kodepos">-</span></div>
                 </div>
             </div>
 
             <div id="orangtua" class="tab-content">
-                <div class="detail-title">Orang Tua/Wali</div>
+                <div class="detail-title">Orang Tua</div>
                 <div class="detail-grid-ortu">
                     <div class="detail-item"><span class="label">Nama Ayah</span><span class="value" id="det-ayah">-</span></div>
                     <div class="detail-item"><span class="label">Nama Ibu</span><span class="value" id="det-ibu">-</span></div>
-                    <div class="detail-item"><span class="label">Nama Wali</span><span class="value" id="det-wali">-</span></div>
                     <div class="detail-item"><span class="label">Pekerjaan Ayah</span><span class="value" id="det-kerja_ayah">-</span></div>
                     <div class="detail-item"><span class="label">Pekerjaan Ibu</span><span class="value" id="det-kerja_ibu">-</span></div>
-                    <div class="detail-item"><span class="label">Pekerjaan Wali</span><span class="value" id="det-kerja_wali">-</span></div>
                     <div class="detail-item"><span class="label">No. Hp Ayah</span><span class="value" id="det-hp_ayah">-</span></div>
                     <div class="detail-item"><span class="label">No. Hp Ibu</span><span class="value" id="det-hp_ibu">-</span></div>
-                    <div class="detail-item"><span class="label">No. Hp Wali</span><span class="value" id="det-hp_wali">-</span></div>
                     <div class="detail-item"><span class="label">Penghasilan Ayah</span><span class="value" id="det-gaji_ayah">-</span></div>
                     <div class="detail-item"><span class="label">Penghasilan Ibu</span><span class="value" id="det-gaji_ibu">-</span></div>
-                    <div class="detail-item"><span class="label">Penghasilan Wali</span><span class="value" id="det-gaji_wali">-</span></div>
                 </div>
             </div>
 

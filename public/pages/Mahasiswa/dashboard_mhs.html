@@ -33,10 +33,6 @@
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
-
-    .container { display: flex; height: 100vh; overflow: hidden; margin: 0; padding: 0; }
-    #sidebar { width: 280px; flex-shrink: 0; height: 100vh; overflow-y: auto; }
-    .main-content { flex-grow: 1; height: 100vh; overflow-y: auto; padding: 1.5rem 2rem; margin-left: -45px; }
     
     /* Custom Calendar Dots */
     .cal-dot { position: relative; }
@@ -58,165 +54,170 @@
     data-role="mhs" 
     data-page-title="Dashboard Mahasiswa" 
     data-greeting="Selamat datang" 
-    class="bg-[#fcfdfd] font-sans m-0 p-0 text-slate-800 antialiased">
+    class="bg-[#fcfdfd] font-sans m-0 p-0 text-slate-800 antialiased overflow-x-hidden">
 
-    <div class="container">
+    <div class="app-layout flex min-h-screen w-full overflow-x-hidden">
+        
         <div class="hidden">/* [BE-NOTE]: JADIKAN SIDEBAR KOMPONEN BLADE: @include('layouts.sidebar') */</div>
-        <div id="sidebar"></div>
+        <div id="sidebar" class="z-20 shrink-0 w-[230px] hidden lg:block"></div>
 
-        <div class="main-content w-full min-h-screen text-gray-800">
+        <div class="main flex-1 pt-6 pb-4 px-4 sm:pb-6 sm:px-6 md:pb-8 md:px-8 lg:pb-10 lg:px-10 w-0 min-w-0 overflow-y-auto text-gray-800">
+            
             <div class="hidden">/* [BE-NOTE]: JADIKAN HEADER KOMPONEN BLADE: @include('layouts.header') */</div>
             <div id="header"></div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-1 animate-fade-in">
-                
-                <div class="lg:col-span-7 xl:col-span-7 space-y-6">
+            <div class="animate-fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-1">
                     
-                    <div class="bg-white rounded-2xl p-6 lg:p-7 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] h-full">
+                    <div class="lg:col-span-7 xl:col-span-7 space-y-6">
                         
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-[17px] font-semibold text-gray-900 m-0">Jadwal Mendatang</h2>
+                        <div class="bg-white rounded-2xl p-6 lg:p-7 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] h-full">
                             
-                            <div class="flex items-center gap-2 text-[12.5px] font-medium text-gray-600 cursor-pointer hover:bg-gray-50 px-3 py-1.5 rounded-lg transition">
-                                <i data-lucide="calendar" class="w-3.5 h-3.5 text-gray-500"></i>
-                                Rabu, 13 Mei 2026
-                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-500 ml-1"></i>
-                            </div>
-                        </div>
-                        
-                        <div id="jadwalmatakuliahr" class="space-y-4">
-                            
-                            <div class="bg-brand-light border border-brand-border rounded-xl p-4 lg:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-[17px] font-semibold text-gray-900 m-0">Jadwal Mendatang</h2>
                                 
-                                <div class="flex flex-col gap-1.5">
-                                    <h3 class="text-[15.5px] font-semibold text-gray-800 mb-1">Pemrograman Web</h3>
+                                <div class="flex items-center gap-2 text-[12.5px] font-medium text-gray-600 cursor-pointer hover:bg-gray-50 px-3 py-1.5 rounded-lg transition">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-gray-500"></i>
+                                    Rabu, 13 Mei 2026
+                                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-500 ml-1"></i>
+                                </div>
+                            </div>
+                            
+                            <div id="jadwalmatakuliahr" class="space-y-4">
+                                
+                                <div class="bg-brand-light border border-brand-border rounded-xl p-4 lg:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition">
                                     
-                                    <div class="space-y-1 text-[12px] text-gray-500 font-medium">
-                                        <div class="flex items-center gap-2.5">
-                                            <i data-lucide="book" class="w-[14px] h-[14px] text-gray-400"></i> TI-4C
+                                    <div class="flex flex-col gap-1.5">
+                                        <h3 class="text-[15.5px] font-semibold text-gray-800 mb-1">Pemrograman Web</h3>
+                                        
+                                        <div class="space-y-1 text-[12px] text-gray-500 font-medium">
+                                            <div class="flex items-center gap-2.5">
+                                                <i data-lucide="book" class="w-[14px] h-[14px] text-gray-400"></i> TI-4C
+                                            </div>
+                                            <div class="flex items-center gap-2.5">
+                                                <i data-lucide="clock" class="w-[14px] h-[14px] text-gray-400"></i> 08:00 - 10:00
+                                            </div>
+                                            <div class="flex items-center gap-2.5">
+                                                <i data-lucide="building" class="w-[14px] h-[14px] text-gray-400"></i> Lab Rekayasa 1
+                                            </div>
                                         </div>
-                                        <div class="flex items-center gap-2.5">
-                                            <i data-lucide="clock" class="w-[14px] h-[14px] text-gray-400"></i> 08:00 - 10:00
-                                        </div>
-                                        <div class="flex items-center gap-2.5">
-                                            <i data-lucide="building" class="w-[14px] h-[14px] text-gray-400"></i> Lab Rekayasa 1
-                                        </div>
+                                        <a href="#" class="text-[12px] text-blue-500 font-medium mt-1 inline-block">Rabu, 13 Mei 2026</a>
                                     </div>
-                                    <a href="#" class="text-[12px] text-blue-500 font-medium mt-1 inline-block">Rabu, 13 Mei 2026</a>
+
+                                    <button onclick="window.location.href='presensi_mhs.html'" class="w-full md:w-auto bg-white border border-gray-200 text-gray-600 text-[13px] font-medium px-4 py-2 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
+                                        <i data-lucide="clipboard-edit" class="w-3.5 h-3.5"></i> Presensi
+                                    </button>
                                 </div>
 
-                                <button onclick="window.location.href='presensi_mhs.html'" class="w-full md:w-auto bg-white border border-gray-200 text-gray-600 text-[13px] font-medium px-4 py-2 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
-                                    <i data-lucide="clipboard-edit" class="w-3.5 h-3.5"></i> Presensi
+                                <div class="bg-brand-light border border-brand-border rounded-xl p-4 lg:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition">
+                                    
+                                    <div class="flex flex-col gap-1.5">
+                                        <h3 class="text-[15.5px] font-semibold text-gray-800 mb-1">Administrasi Database</h3>
+                                        
+                                        <div class="space-y-1 text-[12px] text-gray-500 font-medium">
+                                            <div class="flex items-center gap-2.5">
+                                                <i data-lucide="book" class="w-[14px] h-[14px] text-gray-400"></i> TI-4C
+                                            </div>
+                                            <div class="flex items-center gap-2.5">
+                                                <i data-lucide="clock" class="w-[14px] h-[14px] text-gray-400"></i> 13:30 - 17:55
+                                            </div>
+                                            <div class="flex items-center gap-2.5">
+                                                <i data-lucide="building" class="w-[14px] h-[14px] text-gray-400"></i> Lab Rekayasa 2
+                                            </div>
+                                        </div>
+                                        <a href="#" class="text-[12px] text-blue-500 font-medium mt-1 inline-block">Rabu, 13 Mei 2026</a>
+                                    </div>
+
+                                    <button onclick="window.location.href='dashboard_presensi.html'" class="w-full md:w-auto bg-white border border-gray-200 text-gray-600 text-[13px] font-medium px-4 py-2 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
+                                        <i data-lucide="clipboard-edit" class="w-3.5 h-3.5"></i> Presensi
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 xl:col-span-5 space-y-4">
+                        
+                        <div class="hidden">/* [BE-NOTE]: LOGIKA SIMULASI TAGIHAN. Gunakan kondisi IF ELSE pada engine Blade untuk memilih card yang dirender:
+                           @if($mahasiswa->ada_tagihan)
+                               Render komponen ID "tagihan-ada" (Hapus class 'hidden')
+                           @else
+                               Render komponen ID "totaltagihan" (Kondisi bawaan lunas Anda)
+                           @endif
+                        */</div>
+
+                        <div id="tagihan-ada" class=" hidden bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] flex flex-col justify-between min-h-[190px]">
+                            <div class="w-full flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 bg-rose-50 text-rose-600 rounded-xl shadow-sm shrink-0">
+                                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                                    </div>
+                                    <h2 class="text-[14.5px] font-semibold text-gray-900 m-0">Total Tagihan</h2>
+                                </div>
+                                <span class="text-[10px] font-bold bg-rose-50 text-rose-600 px-2 py-0.5 rounded-md uppercase tracking-wider animate-pulse">
+                                    Belum Bayar
+                                </span>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="text-[11px] text-gray-400 font-medium uppercase tracking-wider m-0 mb-1">UKT Semester Ganjil</p>
+                                <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-800 m-0 tracking-tight leading-none">
+                                    Rp 2.900.000
+                                </h1>
+                            </div>
+
+                            <div class="flex items-center justify-between border-t border-gray-50 pt-3.5 mt-auto">
+                                <div class="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
+                                    <i data-lucide="calendar-days" class="w-3.5 h-3.5 text-gray-400"></i>
+                                    <span>Jatuh tempo: <strong class="text-gray-600 font-semibold">30 Juni 2026</strong></span>
+                                </div>
+                                <button onclick="window.location.href='/pages/Mahasiswa/tagihan.html'" class="bg-blue-600 hover:bg-blue-700 text-white text-[11.5px] font-semibold px-3.5 py-1.5 rounded-xl transition shadow-sm hover:shadow flex items-center gap-1 cursor-pointer">
+                                    Bayar <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="totaltagihan" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] flex flex-col">
+                            <div class="w-full flex justify-between items-center mb-3">
+                                <h2 class="text-[15.5px] font-semibold text-gray-900 m-0">Total Tagihan</h2>
+                                <button onclick="window.location.href='/pages/Mahasiswa/tagihan.html'" class="bg-white border border-gray-200 text-gray-600 text-[12px] font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition shadow-sm cursor-pointer">
+                                    Detail
                                 </button>
                             </div>
 
-                            <div class="bg-brand-light border border-brand-border rounded-xl p-4 lg:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition">
+                            <div class="flex flex-col items-center justify-center py-2">
                                 
-                                <div class="flex flex-col gap-1.5">
-                                    <h3 class="text-[15.5px] font-semibold text-gray-800 mb-1">Administrasi Database</h3>
+                                <div class="relative w-24 h-24 mb-3 flex items-center justify-center">
+                                    <div class="absolute inset-0 bg-blue-50/50 rounded-full blur-xl"></div>
+                                    <div class="relative z-10 bg-white p-2.5 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-50">
+                                        <i data-lucide="clipboard-list" class="w-10 h-10 text-blue-100 stroke-[1.5]"></i>
+                                        <div class="absolute top-2 left-2 flex flex-col gap-1">
+                                            <div class="w-3 h-[3px] bg-blue-100 rounded"></div>
+                                            <div class="w-5 h-[3px] bg-blue-100 rounded"></div>
+                                            <div class="w-4 h-[3px] bg-blue-100 rounded"></div>
+                                        </div>
+                                    </div>
                                     
-                                    <div class="space-y-1 text-[12px] text-gray-500 font-medium">
-                                        <div class="flex items-center gap-2.5">
-                                            <i data-lucide="book" class="w-[14px] h-[14px] text-gray-400"></i> TI-4C
-                                        </div>
-                                        <div class="flex items-center gap-2.5">
-                                            <i data-lucide="clock" class="w-[14px] h-[14px] text-gray-400"></i> 13:30 - 17:55
-                                        </div>
-                                        <div class="flex items-center gap-2.5">
-                                            <i data-lucide="building" class="w-[14px] h-[14px] text-gray-400"></i> Lab Rekayasa 2
-                                        </div>
+                                    <div class="absolute -bottom-1 -left-1 bg-pink-500 rounded-full p-1 shadow-sm z-20">
+                                        <i data-lucide="x" class="w-2.5 h-2.5 text-white stroke-[3]"></i>
                                     </div>
-                                    <a href="#" class="text-[12px] text-blue-500 font-medium mt-1 inline-block">Rabu, 13 Mei 2026</a>
-                                </div>
-
-                                <button onclick="window.location.href='dashboard_presensi.html'" class="w-full md:w-auto bg-white border border-gray-200 text-gray-600 text-[13px] font-medium px-4 py-2 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition shadow-sm">
-                                    <i data-lucide="clipboard-edit" class="w-3.5 h-3.5"></i> Presensi
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5 xl:col-span-5 space-y-4">
-                    
-                    <div class="hidden">/* [BE-NOTE]: LOGIKA SIMULASI TAGIHAN. Gunakan kondisi IF ELSE pada engine Blade untuk memilih card yang dirender:
-                       @if($mahasiswa->ada_tagihan)
-                           Render komponen ID "tagihan-ada" (Hapus class 'hidden')
-                       @else
-                           Render komponen ID "totaltagihan" (Kondisi bawaan lunas Anda)
-                       @endif
-                    */</div>
-
-                    <div id="tagihan-ada" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] flex flex-col justify-between min-h-[190px]">
-                        <div class="w-full flex justify-between items-center mb-4">
-                            <div class="flex items-center gap-2.5">
-                                <div class="p-2 bg-rose-50 text-rose-600 rounded-xl shadow-sm shrink-0">
-                                    <i data-lucide="wallet" class="w-4 h-4"></i>
-                                </div>
-                                <h2 class="text-[14.5px] font-semibold text-gray-900 m-0">Total Tagihan</h2>
-                            </div>
-                            <span class="text-[10px] font-bold bg-rose-50 text-rose-600 px-2 py-0.5 rounded-md uppercase tracking-wider animate-pulse">
-                                Belum Bayar
-                            </span>
-                        </div>
-
-                        <div class="mb-4">
-                            <p class="text-[11px] text-gray-400 font-medium uppercase tracking-wider m-0 mb-1">UKT Semester Ganjil</p>
-                            <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-800 m-0 tracking-tight leading-none">
-                                Rp 2.900.000
-                            </h1>
-                        </div>
-
-                        <div class="flex items-center justify-between border-t border-gray-50 pt-3.5 mt-auto">
-                            <div class="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
-                                <i data-lucide="calendar-days" class="w-3.5 h-3.5 text-gray-400"></i>
-                                <span>Jatuh tempo: <strong class="text-gray-600 font-semibold">30 Juni 2026</strong></span>
-                            </div>
-                            <button onclick="window.location.href='/pages/Mahasiswa/tagihan.html'" class="bg-blue-600 hover:bg-blue-700 text-white text-[11.5px] font-semibold px-3.5 py-1.5 rounded-xl transition shadow-sm hover:shadow flex items-center gap-1 cursor-pointer">
-                                Bayar <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="totaltagihan" class="hidden bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] flex flex-col">
-                        <div class="w-full flex justify-between items-center mb-3">
-                            <h2 class="text-[15.5px] font-semibold text-gray-900 m-0">Total Tagihan</h2>
-                            <button onclick="window.location.href='/pages/Mahasiswa/tagihan.html'" class="bg-white border border-gray-200 text-gray-600 text-[12px] font-medium px-3 py-1.5 rounded-lg hover:bg-gray-50 transition shadow-sm cursor-pointer">
-                                Detail
-                            </button>
-                        </div>
-
-                        <div class="flex flex-col items-center justify-center py-2">
-                            
-                            <div class="relative w-24 h-24 mb-3 flex items-center justify-center">
-                                <div class="absolute inset-0 bg-blue-50/50 rounded-full blur-xl"></div>
-                                <div class="relative z-10 bg-white p-2.5 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-50">
-                                    <i data-lucide="clipboard-list" class="w-10 h-10 text-blue-100 stroke-[1.5]"></i>
-                                    <div class="absolute top-2 left-2 flex flex-col gap-1">
-                                        <div class="w-3 h-[3px] bg-blue-100 rounded"></div>
-                                        <div class="w-5 h-[3px] bg-blue-100 rounded"></div>
-                                        <div class="w-4 h-[3px] bg-blue-100 rounded"></div>
+                                    <div class="absolute -right-1 top-2 bg-white rounded-full p-0.5 shadow-sm border border-gray-50 z-20">
+                                        <i data-lucide="clock" class="w-6 h-6 text-blue-600 stroke-[2]"></i>
                                     </div>
                                 </div>
-                                
-                                <div class="absolute -bottom-1 -left-1 bg-pink-500 rounded-full p-1 shadow-sm z-20">
-                                    <i data-lucide="x" class="w-2.5 h-2.5 text-white stroke-[3]"></i>
-                                </div>
-                                <div class="absolute -right-1 top-2 bg-white rounded-full p-0.5 shadow-sm border border-gray-50 z-20">
-                                    <i data-lucide="clock" class="w-6 h-6 text-blue-600 stroke-[2]"></i>
-                                </div>
+
+                                <h3 class="text-[14px] font-bold text-gray-800 mb-1">Belum Ada Tagihan Baru</h3>
+                                <p class="text-[12px] text-gray-600 text-center leading-snug m-0">
+                                    Terima kasih telah melunasi tagihan<br>akademik di periode ini.
+                                </p>
                             </div>
-
-                            <h3 class="text-[14px] font-bold text-gray-800 mb-1">Belum Ada Tagihan Baru</h3>
-                            <p class="text-[12px] text-gray-600 text-center leading-snug m-0">
-                                Terima kasih telah melunasi tagihan<br>akademik di periode ini.
-                            </p>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
                         

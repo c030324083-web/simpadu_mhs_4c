@@ -31,20 +31,20 @@
 
 </head>
 
-<body class="page-edit" 
+<body class="page-edit bg-[#fdfdfd] font-sans m-0 p-0 text-slate-800 antialiased overflow-x-hidden" 
     data-page="mahasiswa" 
     data-role="admin"
     data-search="false"
     data-page-title="Data Mahasiswa"
-    data-greeting="Update Data Mahasiswa"
-    class="bg-[#fdfdfd] font-sans m-0 p-0 text-slate-800 antialiased">
+    data-greeting="Update Data Mahasiswa">
 
-<div class="container">
-<div id="sidebar"></div>
+    <div class="flex w-full min-h-screen">
+        
+        <div id="sidebar" class="shrink-0"></div>
 
-<div class="main animate-fade-in">
+        <div class="main animate-fade-in flex-1 min-w-0 bg-[#f8fafc] p-6">
 
-<div id="header"></div>
+        <div id="header" class="mb-6"></div>
 
     <div class="back" onclick="goBack()">
         <i data-lucide="arrow-left"></i>
@@ -107,7 +107,7 @@
     </div>
 
     <div class="tab" data-tab="orangtua" onclick="showTab('orangtua')">
-        <i data-lucide="users"></i> Orang Tua/Wali
+        <i data-lucide="users"></i> Orang Tua
     </div>
 
     <div class="tab" data-tab="sekolah" onclick="showTab('sekolah')">
@@ -186,6 +186,12 @@
 </div>
 
 </div>
+
+    <div class="form-actions">
+        <button class="btn-cancel" onclick="goBack()">Batal</button>
+        <button class="btn-save" id="btnUpdate">Simpan Perubahan</button>
+    </div>
+
 </div>
 
 <div id="domisili" class="tab-content">
@@ -213,24 +219,18 @@
         <input type="text" id="edit-kodepos" value="">
     </div>
 </div>
-
-<div class="form-row-3">
-    <div class="form-group">
-        <label>Kecamatan <span>*</span></label>
-        <input type="text" id="edit-kecamatan" value="">
-    </div>
-    <div class="form-group">
-        <label>Kelurahan/Desa <span>*</span></label>
-        <input type="text" id="edit-kelurahan" value="">
-    </div>
 </div>
 
-</div>
+    <div class="form-actions">
+        <button class="btn-cancel" onclick="goBack()">Batal</button>
+        <button class="btn-save" id="btnUpdate">Simpan Perubahan</button>
+    </div>
+
 </div>
 
 <div id="orangtua" class="tab-content">
 
-<div class="detail-title">Orang Tua/Wali</div>
+<div class="detail-title">Orang Tua</div>
 
 <div class="form-row-3">
 
@@ -302,40 +302,13 @@
         </select>
     </div>
 </div>
-
-<div class="form-column">
-    <div class="form-group">
-        <label>Nama Wali</label>
-        <input type="text" id="edit-nama-wali" value="">
-    </div>
-
-    <div class="form-group">
-        <label>Pekerjaan Wali</label>
-        <select id="edit-kerja-wali">
-            <option value="">Pilih Pekerjaan...</option>
-            <option value="Karyawan Swasta">Karyawan Swasta</option>
-            <option value="PNS">PNS</option>
-            <option value="Wiraswasta">Wiraswasta</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>No. Hp Wali</label>
-        <input type="text" id="edit-hp-wali" value="">
-    </div>
-
-    <div class="form-group">
-        <label>Penghasilan Wali</label>
-        <select id="edit-gaji-wali">
-            <option value="">Pilih Penghasilan...</option>
-            <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
-            <option value="Rp 1.000.000 - Rp 3.000.000">Rp 1.000.000 - Rp 3.000.000</option>
-            <option value="> Rp 3.000.000">&gt; Rp 3.000.000</option>
-        </select>
-    </div>
 </div>
 
-</div>
+    <div class="form-actions">
+        <button class="btn-cancel" onclick="goBack()">Batal</button>
+        <button class="btn-save" id="btnUpdate">Simpan Perubahan</button>
+    </div>
+
 </div>
 
 <div id="sekolah" class="tab-content">
@@ -359,11 +332,6 @@
     <div class="form-group">
         <label>Sekolah <span>*</span></label>
         <input type="text" id="edit-sekolah" value="">
-    </div>
-
-    <div class="form-group">
-        <label>Provinsi Sekolah <span>*</span></label>
-        <input type="text" id="edit-prov-sekolah" value="">
     </div>
 
     <div class="form-group">
