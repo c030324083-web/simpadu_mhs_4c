@@ -10,39 +10,43 @@ document.addEventListener("DOMContentLoaded", () => {
         lucide.createIcons();
     }
 
+    // URL Utama API Backend Laravel Anda
     const API_URL = "/api/web/mahasiswa"; 
+    // Ambil token bearer yang tersimpan saat login (Sesuaikan key 'token' jika berbeda)
     const BEARER_TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
 
     const tbody = document.getElementById("tableBody");
+    const inputSearch = document.getElementById("searchInput"); // Sesuaikan ID input pencarian di HTML Anda
     const selectProdi = document.getElementById("filterProdi");
     const selectKelas = document.getElementById("filterKelas");
     const selectSort = document.getElementById("sortSelect");
-
-    // Variabel untuk melacak halaman saat ini
-    let currentPage = 1;
 
     // =========================================================
     // BAGIAN 1: AMBIL DATA DARI BACKEND (FETCH API)
     // =========================================================
     async function fetchMahasiswaData() {
         try {
+            // Membangun Query Parameters secara dinamis sesuai filter di UI
             const params = new URLSearchParams();
             
-            // Sertakan halaman saat ini ke dalam request API
-            params.append("page", currentPage);
-
+            if (inputSearch && inputSearch.value.trim() !== "") {
+                params.append("search", inputSearch.value.trim());
+            }
             if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") {
                 params.append("id_prodi", selectProdi.value);
             }
             if (selectKelas && selectKelas.value !== "semua" && selectKelas.value !== "") {
+                // Jika filter menggunakan kelas dari kelompok 1, di backend dicocokkan via semester/NIM
                 params.append("semester", selectKelas.value); 
             }
             if (selectSort && selectSort.value !== "") {
+                // Misal format value di select: "nama-asc" atau "nim-desc"
                 const [sortBy, sortDir] = selectSort.value.split("-");
                 if (sortBy) params.append("sort_by", sortBy);
                 if (sortDir) params.append("sort_dir", sortDir);
             }
 
+            // Memanggil endpoint api/web/mahasiswa
             const response = await fetch(`${API_URL}?${params.toString()}`, {
                 method: "GET",
                 headers: {
@@ -55,28 +59,33 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
+                // Laravel Paginate membungkus data di dalam objek data.data
                 const listMahasiswa = result.data.data || [];
                 renderTable(listMahasiswa);
-                renderPagination(result.data); // Render tombol selanjutnya/sebelumnya
             } else {
-                renderTable([]); 
-                document.getElementById("paginationContainer").classList.add("hidden");
+                console.error("Gagal memuat data dari API:", result.message);
+                renderTable([]); // Render empty state
             }
         } catch (error) {
-            console.error("Terjadi kesalahan:", error);
+            console.error("Terjadi kesalahan jaringan/sistem:", error);
             renderTable([]);
-            document.getElementById("paginationContainer").classList.add("hidden");
         }
     }
 
     // =========================================================
-    // BAGIAN 2: RENDER TABEL HTML
+    // BAGIAN 2: RENDER TABEL HTML (EMPTY STATE & DATA ROWS)
     // =========================================================
     function renderTable(data) {
         if (!tbody) return;
         tbody.innerHTML = ""; 
 
+        // Tampilan UI Jika Data Kosong / Tidak Ditemukan (Empty State)
         if (!data || data.length === 0) {
+            let namaProdiTeks = "tersebut";
+            if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") {
+                namaProdiTeks = selectProdi.options[selectProdi.selectedIndex].text;
+            }
+
             tbody.innerHTML = `
                 <tr>
                     <td colspan="6" class="py-20 text-center">
@@ -86,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                             <h3 class="text-[17px] font-bold text-slate-700 mb-2 m-0 tracking-tight">Data Tidak Ditemukan</h3>
                             <p class="text-[14.5px] text-slate-500 m-0 max-w-md mx-auto leading-relaxed">
-                                Data mahasiswa untuk kriteria saat ini belum tersedia pada sistem database terintegrasi.
+                                Data mahasiswa untuk kriteria <strong class="text-slate-800">${namaProdiTeks}</strong> saat ini belum tersedia pada sistem database terintegrasi.
                             </p>
                         </div>
                     </td>
@@ -96,13 +105,15 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Loop dan render baris data dari API riil backend
         data.forEach((mhs) => {
             const tr = document.createElement("tr");
             tr.className = "border-b border-slate-50 hover:bg-slate-50 transition";
             
+            // Logika class warna status secara dinamis
             const isAktif = mhs.status && mhs.status.toLowerCase() === 'aktif';
             const badgeClass = isAktif 
-                ? "bg-[#DCFCE7] text-[#16A34A]" 
+                ? "bg-[#DCFCE7] text-[#22C55E]" 
                 : "bg-red-100 text-red-600";
 
             tr.innerHTML = `
@@ -138,76 +149,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================
-    // BAGIAN 3: RENDER PAGINATION (TOMBOL NEXT/PREV)
+    // BAGIAN 3: EVENT LISTENER UNTUK FILTER, SEARCH & SORT
     // =========================================================
-    function renderPagination(metaData) {
-        const container = document.getElementById("paginationContainer");
-        const pageInfo = document.getElementById("pageInfo");
-        const pageButtons = document.getElementById("pageButtons");
-
-        // Sembunyikan jika tidak ada data
-        if (!metaData || metaData.total === 0) {
-            container.classList.add("hidden");
-            return;
-        }
-
-        container.classList.remove("hidden");
-        
-        // Update teks (Misal: "Menampilkan 1 - 10 dari 50 data")
-        const from = metaData.from || 0;
-        const to = metaData.to || 0;
-        const total = metaData.total || 0;
-        pageInfo.innerHTML = `Menampilkan <span class="font-semibold text-slate-800">${from} - ${to}</span> dari <strong class="text-slate-800">${total}</strong> data`;
-
-        let buttonsHTML = "";
-
-        // Tombol Sebelumnya
-        if (metaData.current_page > 1) {
-            buttonsHTML += `<button onclick="changePage(${metaData.current_page - 1})" class="px-3 py-1.5 border border-slate-300 rounded text-sm text-slate-600 hover:bg-slate-50 transition cursor-pointer">Sebelumnya</button>`;
-        } else {
-            buttonsHTML += `<button disabled class="px-3 py-1.5 border border-slate-200 rounded text-sm text-slate-400 bg-slate-50 cursor-not-allowed">Sebelumnya</button>`;
-        }
-
-        // Indikator halaman saat ini
-        buttonsHTML += `<span class="px-4 py-1.5 text-sm font-semibold text-blue-600 bg-blue-50 rounded">${metaData.current_page}</span>`;
-
-        // Tombol Selanjutnya
-        if (metaData.current_page < metaData.last_page) {
-            buttonsHTML += `<button onclick="changePage(${metaData.current_page + 1})" class="px-3 py-1.5 border border-slate-300 rounded text-sm text-slate-600 hover:bg-slate-50 transition cursor-pointer">Selanjutnya</button>`;
-        } else {
-            buttonsHTML += `<button disabled class="px-3 py-1.5 border border-slate-200 rounded text-sm text-slate-400 bg-slate-50 cursor-not-allowed">Selanjutnya</button>`;
-        }
-
-        pageButtons.innerHTML = buttonsHTML;
-    }
-
-    // Fungsi klik tombol pindah halaman
-    window.changePage = function(pageNumber) {
-        currentPage = pageNumber;
-        fetchMahasiswaData(); // Load data baru dari API
-    };
-
-    // =========================================================
-    // BAGIAN 4: EVENT LISTENER UNTUK FILTER & SORT
-    // =========================================================
-    function resetAndFetch() {
-        currentPage = 1; // Jika filter diubah, kembali ke halaman 1
-        fetchMahasiswaData();
-    }
-
+    
+    // Aktifkan Cascading Dropdown bawaan UI jika ada
     if (typeof GlobalProdiKelas !== 'undefined') {
         GlobalProdiKelas.init('filterProdi', 'filterKelas');
     }
 
-    if (selectProdi) selectProdi.addEventListener("change", resetAndFetch);
-    if (selectKelas) selectKelas.addEventListener("change", resetAndFetch);
-    if (selectSort) selectSort.addEventListener("change", resetAndFetch);
+    // Triger reload data dari API setiap kali input/filter diubah oleh user
+    if (selectProdi) selectProdi.addEventListener("change", fetchMahasiswaData);
+    if (selectKelas) selectKelas.addEventListener("change", fetchMahasiswaData);
+    if (selectSort) selectSort.addEventListener("change", fetchMahasiswaData);
     
-    // Panggilan pertama saat halaman selesai dimuat
+    if (inputSearch) {
+        // Menggunakan teknik debounce sederhana agar tidak menembak API di setiap ketikan huruf
+        let delayTimer;
+        inputSearch.addEventListener("input", () => {
+            clearTimeout(delayTimer);
+            delayTimer = setTimeout(fetchMahasiswaData, 500); // Tunggu 0.5 detik diam baru panggil API
+        });
+    }
+
+    // Panggilan pertama saat halaman selesai dimuat pertama kali
     fetchMahasiswaData();
 
     // =========================================================
-    // BAGIAN 5: LOGIKA POP-UP HAPUS DATA
+    // BAGIAN 4: LOGIKA POP-UP HAPUS DATA (KONEKSI BACKEND)
     // =========================================================
     let nimToDelete = null;
 
@@ -228,6 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnConfirmDelete.addEventListener("click", async () => {
             if (nimToDelete) {
                 try {
+                    // Panggil API Delete ke backend Laravel Anda jika sudah ada endpoint destruktifnya
                     const response = await fetch(`${API_URL}/${nimToDelete}`, {
                         method: "DELETE",
                         headers: {
@@ -239,11 +208,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (response.ok) {
                         alert("Data mahasiswa berhasil dihapus dari sistem!");
                     } else {
+                        // Simulasi UI jika endpoint delete belum selesai dibuat di backend Anda
                         alert(`Simulasi Hapus Berhasil untuk NIM: ${nimToDelete}`);
                     }
                     
                     closeDeleteModal();
-                    fetchMahasiswaData(); 
+                    fetchMahasiswaData(); // Refresh data tabel secara real-time dari server
                 } catch (error) {
                     console.error("Gagal menghapus data:", error);
                     closeDeleteModal();
