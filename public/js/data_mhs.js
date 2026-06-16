@@ -31,6 +31,33 @@ document.addEventListener("DOMContentLoaded", () => {
     // Variable global penampung data master prodi
     let listMasterProdi = [];
 
+    // ========================================================================
+    // OTOMATISASI STYLE SCROLLABLE TBODY (Agar tabel bisa di-scroll tanpa jebol)
+    // ========================================================================
+    if (tbody) {
+        const tableElement = tbody.closest('table');
+        if (tableElement) {
+            // Mencegah struktur tabel berantakan saat tbody diubah menjadi block/scrollable
+            tableElement.style.borderCollapse = 'collapse';
+            tableElement.style.width = '100%';
+            
+            // Set header tabel tetap berada di atas (sticky) saat di-scroll
+            const theadThs = tableElement.querySelectorAll('thead th');
+            theadThs.forEach(th => {
+                th.style.position = 'sticky';
+                th.style.top = '0';
+                th.style.zIndex = '10';
+                th.style.backgroundColor = '#f8fafc'; // Menyesuaikan warna latar header (bg-slate-50)
+            });
+        }
+
+        // Terapkan pembatasan tinggi maksimal pada body tabel mahasiswa
+        tbody.style.display = 'block';
+        tbody.style.maxHeight = '450px'; // Silakan sesuaikan tinggi pixel sesuai keinginan Anda
+        tbody.style.overflowY = 'auto';
+        tbody.style.width = '100%';
+    }
+
     // =========================================================
     // FUNGSI UTAMA 1: MEMUAT MASTER PRODI & ISI DROPDOWN
     // =========================================================
@@ -53,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error("Format response API tidak sesuai");
             }
         } catch (error) {
-            console.warn("Gagal mengambil API Prodi Kelompok 1. Mengaktifkan fallback lokal:", error);
+            console.warn("Gagal mengambil API Prodi Kelompok 1. Mengaktifkan fallback lokal riil:", error);
             // DATA FALLBACK LOKAL YANG DISINKRONKAN DENGAN REAL ID API KELOMPOK 1
             listMasterProdi = [
                 {
@@ -131,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (modalJurusan) {
             modalJurusan.innerHTML = '<option value="">Pilih Jurusan</option>';
-            // Ambil daftar jurusan unik dari objek prodi yang ada
             const uniqueJurusan = [];
             listMasterProdi.forEach(p => {
                 if (p.jurusan && !uniqueJurusan.some(j => j.id_jurusan === p.id_jurusan)) {
@@ -147,7 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (modalKelas) {
-            // Dropdown kelas diisi data dummy/statis karena data kelas tidak ada di API Prodi
             modalKelas.innerHTML = `
                 <option value="">Pilih Kelas</option>
                 <option value="A">Kelas A</option>
@@ -156,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
 
-        // Setelah dropdown filter selesai disiapkan, baru panggil data mahasiswa dari database lokal Anda
         fetchMahasiswaData();
     }
 
@@ -220,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             tbody.innerHTML = `
-                <tr>
+                <tr style="display: table; width: 100%;">
                     <td colspan="6" class="py-20 text-center">
                         <div class="flex flex-col items-center justify-center animate-fade-in">
                             <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
@@ -240,22 +264,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         data.forEach((mhs) => {
             const tr = document.createElement("tr");
+            // Set agar row bertingkah laku normal layaknya tabel di dalam block container
+            tr.style.display = 'table';
+            tr.style.width = '100%';
+            tr.style.tableLayout = 'fixed';
             tr.className = "border-b border-slate-50 hover:bg-slate-50 transition";
             
             const isAktif = mhs.status && mhs.status.toLowerCase() === 'aktif';
             const badgeClass = isAktif ? "bg-[#DCFCE7] text-[#22C55E]" : "bg-red-100 text-red-600";
 
-            // --- JEMBATAN KAWIN DATA (Mencocokkan id_prodi lokal dengan nama_prodi API Kelompok 1) ---
-            // Gunakan properti mhs.id_prodi (jika dikirim oleh backend) untuk mencari nama prodinya
             let namaProdiReal = mhs.program_studi;
-            if (mhs.program_studi === "Prodi Belum Diatur" && mhs.id_prodi) {
-                const temukanProdi = listMasterProdi.find(p => p.id_prodi == mhs.id_prodi);
+            
+            const foreignKeyProdi = mhs.id_prodi || mhs.ID_PRODI;
+            if (mhs.program_studi === "Prodi Belum Diatur" && foreignKeyProdi) {
+                const temukanProdi = listMasterProdi.find(p => p.id_prodi == foreignKeyProdi);
                 if (temukanProdi) {
                     namaProdiReal = temukanProdi.nama_prodi;
                 }
             } else if (mhs.program_studi === "Prodi Belum Diatur") {
-                // Skenario tambahan apabila response mhs.program_studi berisi default string teks dari backend
-                namaProdiReal = "D3 Teknik Informatika"; 
+                // Skenario tambahan apabila database lokal masih kosong
+                namaProdiReal = "Teknik Informatika"; 
             }
 
             tr.innerHTML = `
