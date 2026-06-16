@@ -219,4 +219,28 @@ class ApiMahasiswaController extends Controller
             'data' => $mahasiswa
         ]);
     }
+
+    public function searchByIdUkt(Request $request, $id_ukt_kategori = null)
+    {
+        $keyword = trim($id_ukt_kategori ?? $request->query('ID_UKT_KATEGORI', ''));
+
+        if ($keyword === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Parameter id_ukt_kategori wajib diisi untuk pencarian'
+            ], 400);
+        }
+
+        $mahasiswa = Mahasiswa::with([
+            'jenisKelamin:id_jk,nama_jk',
+            'statusMahasiswa:id_status_mhs,nama_status_mhs'
+        ])->where('ID_UKT_KATEGORI', 'LIKE', "%{$keyword}%")
+          ->get(['nim', 'id_prodi', 'ID_UKT_KATEGORI', 'id_jk', 'id_status_mhs', 'email']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hasil pencarian mahasiswa',
+            'data' => $mahasiswa
+        ]);
+    }
 }

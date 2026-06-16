@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\InterService\ApiJenisSekolahController;
 use App\Http\Controllers\Api\Mobile\MobileAdminDashboardController;
 use App\Http\Controllers\Api\Web\PengaturanController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Web\AuthController;
 use App\Http\Controllers\Api\Web\JenisKelaminController;
 use App\Http\Controllers\Api\Web\StatusMahasiswaController;
@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Web\AdminPresensiController;
 use App\Http\Controllers\Api\InterService\ApiJenisKelaminController;
 use App\Http\Controllers\Api\InterService\ApiStatusMahasiswaController;
 use App\Http\Controllers\Api\InterService\ApiMahasiswaController;
+use Illuminate\Support\Facades\Route;
 
 // Jalur Endpoint Autentikasi
 Route::post('/auth/login', [AuthController::class,'login']);
@@ -44,7 +45,7 @@ Route::middleware('check.central.auth')->group(function () {
 
         // Dashboard Admin
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'dashboardAdmin']);
-        Route::get('/admin/data-mahasiswa', [AdminDataMahasiswaController::class, 'index']);
+        Route::get('/admin/data-mahasiswa', [AdminDataMahasiswaController::class, 'Index']);
         Route::get('/admin/presensi', [AdminDashboardController::class, 'dataMahasiswa']);
         Route::get('/admin/krs', [AdminDashboardController::class, 'dataMahasiswa']);
         Route::get('/admin/khs', [AdminDashboardController::class, 'dataMahasiswa']);
@@ -61,17 +62,24 @@ Route::middleware('check.central.auth')->group(function () {
 
         // Dashboard Admin
         Route::get('/admin/dashboard', [MobileAdminDashboardController::class,'dashboardAdmin']);
+        Route::get('/admin/data-mahasiswa', [MobileAdminDashboardController::class,'Index']);
     });
 
     // Endpoint untuk Service lain
     Route::prefix('service')->group(function () {
 
+        // Jenis Kelamin
         Route::get('/jenis-kelamin', [ApiJenisKelaminController::class,'index']);
         Route::get('/jenis-kelamin/{id}', [ApiJenisKelaminController::class,'show']);
 
+        // Status Mahasiswa
         Route::get('/status-mhs', [ApiStatusMahasiswaController::class,'index']);
         Route::get('/status-mhs/{id}', [ApiStatusMahasiswaController::class,'show']);
 
+        Route::get('/jenis-sekolah', [ApiJenisSekolahController::class, 'index']);
+        Route::get('/jenis-sekolah/{id}', [ApiJenisSekolahController::class, 'show']);
+
+        //Mahasiswa
         Route::get('/mahasiswa', [ApiMahasiswaController::class, 'Index']);
         Route::get('/mahasiswa/search/{nama}', [ApiMahasiswaController::class,'searchByName']);
         Route::get('/mahasiswa/status/{id_status_mhs}', [ApiMahasiswaController::class,'filterByStatus']);
@@ -80,7 +88,7 @@ Route::middleware('check.central.auth')->group(function () {
         Route::post('/mahasiswa', [ApiMahasiswaController::class, 'Store']);
         Route::put('/mahasiswa/{nim}', [ApiMahasiswaController::class, 'Update']);
         Route::delete('/mahasiswa/{nim}', [ApiMahasiswaController::class, 'Destroy']);
-        Route::get('/mahasiswa/{id_ukt_kategori}', []);
+        Route::get('/mahasiswa/ukt/{id_ukt_kategori}', [ApiMahasiswaController::class,'searchByIdUkt']);
 
     });
 

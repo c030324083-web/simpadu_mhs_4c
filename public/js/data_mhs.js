@@ -1,6 +1,6 @@
 /**
  * =========================================================================================
- * SIMPADU - Front-End UI Interactions
+ * SIMPADU - Front-End UI Interactions (Riil API Integration)
  * File: data_mhs.js
  * =========================================================================================
  */
@@ -10,63 +10,80 @@ document.addEventListener("DOMContentLoaded", () => {
         lucide.createIcons();
     }
 
+    // URL Utama API Backend Laravel Anda
+    const API_URL = "/api/web/mahasiswa"; 
+    // Ambil token bearer yang tersimpan saat login (Sesuaikan key 'token' jika berbeda)
+    const BEARER_TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+
+    const tbody = document.getElementById("tableBody");
+    const inputSearch = document.getElementById("searchInput"); // Sesuaikan ID input pencarian di HTML Anda
+    const selectProdi = document.getElementById("filterProdi");
+    const selectKelas = document.getElementById("filterKelas");
+    const selectSort = document.getElementById("sortSelect");
+
     // =========================================================
-    // BAGIAN A.1: AKTIFKAN CASCADING DROPDOWN (PRODI -> KELAS)
+    // BAGIAN 1: AMBIL DATA DARI BACKEND (FETCH API)
     // =========================================================
-    // Memanggil file global_prodi_kelas.js (Pastikan file ini sudah di-load di HTML)
-    if (typeof GlobalProdiKelas !== 'undefined') {
-        GlobalProdiKelas.init('filterProdi', 'filterKelas');
+    async function fetchMahasiswaData() {
+        try {
+            // Membangun Query Parameters secara dinamis sesuai filter di UI
+            const params = new URLSearchParams();
+            
+            if (inputSearch && inputSearch.value.trim() !== "") {
+                params.append("search", inputSearch.value.trim());
+            }
+            if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") {
+                params.append("id_prodi", selectProdi.value);
+            }
+            if (selectKelas && selectKelas.value !== "semua" && selectKelas.value !== "") {
+                // Jika filter menggunakan kelas dari kelompok 1, di backend dicocokkan via semester/NIM
+                params.append("semester", selectKelas.value); 
+            }
+            if (selectSort && selectSort.value !== "") {
+                // Misal format value di select: "nama-asc" atau "nim-desc"
+                const [sortBy, sortDir] = selectSort.value.split("-");
+                if (sortBy) params.append("sort_by", sortBy);
+                if (sortDir) params.append("sort_dir", sortDir);
+            }
+
+            // Memanggil endpoint api/web/mahasiswa
+            const response = await fetch(`${API_URL}?${params.toString()}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${BEARER_TOKEN}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Laravel Paginate membungkus data di dalam objek data.data
+                const listMahasiswa = result.data.data || [];
+                renderTable(listMahasiswa);
+            } else {
+                console.error("Gagal memuat data dari API:", result.message);
+                renderTable([]); // Render empty state
+            }
+        } catch (error) {
+            console.error("Terjadi kesalahan jaringan/sistem:", error);
+            renderTable([]);
+        }
     }
 
     // =========================================================
-    // BAGIAN A.2: RENDER DATA DUMMY, FILTER, & SORTING
+    // BAGIAN 2: RENDER TABEL HTML (EMPTY STATE & DATA ROWS)
     // =========================================================
-    
-    // [BE-NOTE]: Data ini dummy. Tambahkan properti 'kelas' agar filter kelas bekerja.
-    let dummyData = [
-        {
-            nim: "C030324011",
-            nama: "Aufa Qonita Salsabila",
-            prodi: "D3 Teknik Informatika",
-            kelas: "TI-4C", // Ditambahkan untuk filter kelas
-            semester: "4",
-            status: "Aktif"
-        },
-        {
-            nim: "C030324005",
-            nama: "Budi Santoso",
-            prodi: "D3 Teknik Informatika",
-            kelas: "TI-4A", // Ditambahkan untuk filter kelas
-            semester: "4",
-            status: "Aktif"
-        },
-        {
-            nim: "C030324022",
-            nama: "Zahra Larasati",
-            prodi: "D4 Animasi",
-            kelas: "AN-2A", // Ditambahkan untuk filter kelas
-            semester: "2",
-            status: "Aktif"
-        }
-    ];
-
-    const tbody = document.getElementById("tableBody");
-
-    // 1. Fungsi Utama: Render Tabel HTML
     function renderTable(data) {
         if (!tbody) return;
         tbody.innerHTML = ""; 
 
-        // ================================================================
-        // [LOGIKA BARU]: Tampilan UI Jika Data Kosong (Empty State)
-        // ================================================================
-        if (data.length === 0) {
+        // Tampilan UI Jika Data Kosong / Tidak Ditemukan (Empty State)
+        if (!data || data.length === 0) {
             let namaProdiTeks = "tersebut";
-            const filterProdi = document.getElementById("filterProdi");
-            
-            // Cek jika filter Prodi ada dan bukan memilih "Semua"
-            if (filterProdi && filterProdi.value !== "semua" && filterProdi.value !== "") {
-                namaProdiTeks = filterProdi.options[filterProdi.selectedIndex].text;
+            if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") {
+                namaProdiTeks = selectProdi.options[selectProdi.selectedIndex].text;
             }
 
             tbody.innerHTML = `
@@ -76,33 +93,37 @@ document.addEventListener("DOMContentLoaded", () => {
                             <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
                                 <i data-lucide="folder-open" class="w-10 h-10 text-slate-400 stroke-[1.5]"></i>
                             </div>
-                            <h3 class="text-[17px] font-bold text-slate-700 mb-2 m-0 tracking-tight">Data Belum Tersedia</h3>
+                            <h3 class="text-[17px] font-bold text-slate-700 mb-2 m-0 tracking-tight">Data Tidak Ditemukan</h3>
                             <p class="text-[14.5px] text-slate-500 m-0 max-w-md mx-auto leading-relaxed">
-                                Program studi <strong class="text-slate-800">${namaProdiTeks}</strong> saat ini belum memiliki data pembagian kelas maupun data mahasiswa.
+                                Data mahasiswa untuk kriteria <strong class="text-slate-800">${namaProdiTeks}</strong> saat ini belum tersedia pada sistem database terintegrasi.
                             </p>
                         </div>
                     </td>
                 </tr>
             `;
-            
             if (typeof lucide !== 'undefined') lucide.createIcons();
             return;
         }
-        // ================================================================
 
+        // Loop dan render baris data dari API riil backend
         data.forEach((mhs) => {
             const tr = document.createElement("tr");
             tr.className = "border-b border-slate-50 hover:bg-slate-50 transition";
             
-            // Class button aksi kembali 100% tanpa tambahan class Tailwind
+            // Logika class warna status secara dinamis
+            const isAktif = mhs.status && mhs.status.toLowerCase() === 'aktif';
+            const badgeClass = isAktif 
+                ? "bg-[#DCFCE7] text-[#22C55E]" 
+                : "bg-red-100 text-red-600";
+
             tr.innerHTML = `
-                <td class="py-4 px-5 font-normal text-slate-800">${mhs.nim}</td>
-                <td class="py-4 px-5 font-normal text-slate-800">${mhs.nama}</td>
-                <td class="py-4 px-5 font-normal text-slate-800">${mhs.prodi}</td>
-                <td class="py-4 px-5 font-normal text-slate-800 text-center">${mhs.semester}</td>
+                <td class="py-4 px-5 font-normal text-slate-800">${mhs.nim || '-'}</td>
+                <td class="py-4 px-5 font-normal text-slate-800">${mhs.nama || '-'}</td>
+                <td class="py-4 px-5 font-normal text-slate-800">${mhs.program_studi || 'Belum Diatur'}</td>
+                <td class="py-4 px-5 font-normal text-slate-800 text-center">${mhs.semester || '-'}</td>
                 <td class="py-4 px-5 text-center">
-                    <span class="bg-[#DCFCE7] text-[#22C55E] px-3 py-1 rounded-full text-[11px] font-semibold w-fit">
-                        ${mhs.status}
+                    <span class="${badgeClass} px-3 py-1 rounded-full text-[11px] font-semibold w-fit">
+                        ${mhs.status || 'Tidak Aktif'}
                     </span>
                 </td>
                 <td class="py-4 px-5 text-center">
@@ -127,88 +148,77 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 2. Hubungkan Data Dummy dengan Global Filter & Sort
-    let tableManager = null;
-    if (typeof GlobalFilterSort !== 'undefined') {
-        tableManager = GlobalFilterSort.init({
-            data: dummyData,
-            filters: [
-                { id: 'filterProdi', key: 'prodi' }, 
-                { id: 'filterKelas', key: 'kelas' } // [BARU]: Menambahkan filter kelas ke mesin pencari
-            ],
-            sortId: 'sortSelect', 
-            onRender: function(processedData) {
-                renderTable(processedData);
-            }
-        });
-    } else {
-        console.warn("GlobalFilterSort tidak ditemukan!");
-        renderTable(dummyData);
+    // =========================================================
+    // BAGIAN 3: EVENT LISTENER UNTUK FILTER, SEARCH & SORT
+    // =========================================================
+    
+    // Aktifkan Cascading Dropdown bawaan UI jika ada
+    if (typeof GlobalProdiKelas !== 'undefined') {
+        GlobalProdiKelas.init('filterProdi', 'filterKelas');
     }
 
+    // Triger reload data dari API setiap kali input/filter diubah oleh user
+    if (selectProdi) selectProdi.addEventListener("change", fetchMahasiswaData);
+    if (selectKelas) selectKelas.addEventListener("change", fetchMahasiswaData);
+    if (selectSort) selectSort.addEventListener("change", fetchMahasiswaData);
+    
+    if (inputSearch) {
+        // Menggunakan teknik debounce sederhana agar tidak menembak API di setiap ketikan huruf
+        let delayTimer;
+        inputSearch.addEventListener("input", () => {
+            clearTimeout(delayTimer);
+            delayTimer = setTimeout(fetchMahasiswaData, 500); // Tunggu 0.5 detik diam baru panggil API
+        });
+    }
+
+    // Panggilan pertama saat halaman selesai dimuat pertama kali
+    fetchMahasiswaData();
+
     // =========================================================
-    // BAGIAN B: LOGIKA POP-UP HAPUS DATA MAHASISWA
+    // BAGIAN 4: LOGIKA POP-UP HAPUS DATA (KONEKSI BACKEND)
     // =========================================================
     let nimToDelete = null;
 
     window.openDeleteModal = function(nim) {
         nimToDelete = nim;
         const modal = document.getElementById("deleteModal");
-        if (modal) {
-            modal.classList.add("active");
-        }
+        if (modal) modal.classList.add("active");
     };
 
     window.closeDeleteModal = function() {
         nimToDelete = null;
         const modal = document.getElementById("deleteModal");
-        if (modal) {
-            modal.classList.remove("active");
-        }
-    };
-
-    window.hapusMahasiswa = function(nim) {
-        window.openDeleteModal(nim);
+        if (modal) modal.classList.remove("active");
     };
 
     const btnConfirmDelete = document.getElementById("btnConfirmDelete");
     if (btnConfirmDelete) {
-        btnConfirmDelete.addEventListener("click", () => {
+        btnConfirmDelete.addEventListener("click", async () => {
             if (nimToDelete) {
-                console.log("Melakukan hapus ke Backend untuk NIM:", nimToDelete);
-                
-                // Menghapus data dari array dummy
-                dummyData = dummyData.filter(mhs => mhs.nim !== nimToDelete);
-                
-                // Refresh Tabel
-                if (tableManager) {
-                    tableManager.updateData(dummyData);
-                } else {
-                    renderTable(dummyData);
+                try {
+                    // Panggil API Delete ke backend Laravel Anda jika sudah ada endpoint destruktifnya
+                    const response = await fetch(`${API_URL}/${nimToDelete}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${BEARER_TOKEN}`,
+                            "Accept": "application/json"
+                        }
+                    });
+
+                    if (response.ok) {
+                        alert("Data mahasiswa berhasil dihapus dari sistem!");
+                    } else {
+                        // Simulasi UI jika endpoint delete belum selesai dibuat di backend Anda
+                        alert(`Simulasi Hapus Berhasil untuk NIM: ${nimToDelete}`);
+                    }
+                    
+                    closeDeleteModal();
+                    fetchMahasiswaData(); // Refresh data tabel secara real-time dari server
+                } catch (error) {
+                    console.error("Gagal menghapus data:", error);
+                    closeDeleteModal();
                 }
-                closeDeleteModal();
             }
-        });
-    }
-
-    // =========================================================
-    // BAGIAN C: LOGIKA BUTTON LAINNYA
-    // =========================================================
-    const btnUpdate = document.getElementById("btnUpdate");
-    if (btnUpdate) {
-        btnUpdate.addEventListener("click", (e) => {
-            e.preventDefault(); 
-            alert("Simulasi UI: Menyimpan perubahan data mahasiswa...");
-            goBack(); 
-        });
-    }
-
-    const btnSimpanTop = document.getElementById("btnSimpanTop");
-    if (btnSimpanTop) {
-        btnSimpanTop.addEventListener("click", (e) => {
-            e.preventDefault();
-            alert("Simulasi UI: Menyimpan perubahan data mahasiswa (Tombol Atas)...");
-            goBack(); 
         });
     }
 });

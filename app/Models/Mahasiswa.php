@@ -45,4 +45,9 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(StatusMahasiswa::class, 'id_status_mhs', 'id_status_mhs');
     }
+
+    public function jenisSekolah()
+    {
+        return $this->belongsTo(JenisSekolah::class, 'id_jenis_sekolah', 'id_jenis_sekolah');
+    }
 }
