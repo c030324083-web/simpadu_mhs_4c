@@ -80,7 +80,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout
+     * 3. Logout
      * 
      * 
      */

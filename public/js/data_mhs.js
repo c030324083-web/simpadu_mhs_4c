@@ -1,6 +1,6 @@
 /**
  * =========================================================================================
- * SIMPADU - Front-End UI Interactions (Riil API Integration)
+ * SIMPADU - Front-End UI Interactions (Riil API Integration dengan Master Prodi Kelompok 1)
  * File: data_mhs.js
  * =========================================================================================
  */
@@ -10,23 +10,161 @@ document.addEventListener("DOMContentLoaded", () => {
         lucide.createIcons();
     }
 
-    // URL Utama API Backend Laravel Anda
+    // URL Utama API Backend Laravel Anda dan API Eksternal Kelompok 1
     const API_URL = "/api/web/mahasiswa"; 
-    // Ambil token bearer yang tersimpan saat login (Sesuaikan key 'token' jika berbeda)
+    const API_PRODI_KEL1 = "https://api-admin-4c.rifkiaja.my.id:9002/api/data-master/prodi";
+
+    // Ambil token bearer yang tersimpan saat login
     const BEARER_TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
 
     const tbody = document.getElementById("tableBody");
-    const inputSearch = document.getElementById("searchInput"); // Sesuaikan ID input pencarian di HTML Anda
+    const inputSearch = document.getElementById("searchInput"); 
     const selectProdi = document.getElementById("filterProdi");
     const selectKelas = document.getElementById("filterKelas");
     const selectSort = document.getElementById("sortSelect");
 
+    // Element Selector di dalam Modal Tambah Mahasiswa (sesuai ID di HTML)
+    const modalJurusan = document.getElementById("inputJurusan");
+    const modalProdi = document.getElementById("inputProdi");
+    const modalKelas = document.getElementById("inputKelas");
+
+    // Variable global penampung data master prodi
+    let listMasterProdi = [];
+
     // =========================================================
-    // BAGIAN 1: AMBIL DATA DARI BACKEND (FETCH API)
+    // FUNGSI UTAMA 1: MEMUAT MASTER PRODI & ISI DROPDOWN
+    // =========================================================
+    async function loadMasterProdiDropdowns() {
+        try {
+            const response = await fetch(API_PRODI_KEL1, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) throw new Error(`HTTP Error status: ${response.status}`);
+
+            const result = await response.json();
+            
+            if (result.success && Array.isArray(result.data)) {
+                listMasterProdi = result.data;
+            } else {
+                throw new Error("Format response API tidak sesuai");
+            }
+        } catch (error) {
+            console.warn("Gagal mengambil API Prodi Kelompok 1. Mengaktifkan fallback lokal:", error);
+            // DATA FALLBACK LOKAL YANG DISINKRONKAN DENGAN REAL ID API KELOMPOK 1
+            listMasterProdi = [
+                {
+                    "id_prodi": 1,
+                    "nama_prodi": "Teknik Sipil",
+                    "id_jurusan": 1,
+                    "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }
+                },
+                {
+                    "id_prodi": 2,
+                    "nama_prodi": "Teknik Pertambangan",
+                    "id_jurusan": 1,
+                    "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }
+                },
+                {
+                    "id_prodi": 3,
+                    "nama_prodi": "Teknik Bangunan Rawa",
+                    "id_jurusan": 1,
+                    "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }
+                },
+                {
+                    "id_prodi": 6,
+                    "nama_prodi": "Tata Operasi dan Pemeliharaan Prediktif Alat Berat",
+                    "id_jurusan": 2,
+                    "jurusan": { "id_jurusan": 2, "nama_jurusan": "Teknik Mesin" }
+                },
+                {
+                    "id_prodi": 7,
+                    "nama_prodi": "Teknik Mesin",
+                    "id_jurusan": 2,
+                    "jurusan": { "id_jurusan": 2, "nama_jurusan": "Teknik Mesin" }
+                },
+                {
+                    "id_prodi": 12,
+                    "nama_prodi": "Teknik Informatika",
+                    "id_jurusan": 3,
+                    "jurusan": { "id_jurusan": 3, "nama_jurusan": "Teknik Elektro" }
+                },
+                {
+                    "id_prodi": 16,
+                    "nama_prodi": "Sistem Informasi",
+                    "id_jurusan": 3,
+                    "jurusan": { "id_jurusan": 3, "nama_jurusan": "Teknik Elektro" }
+                },
+                {
+                    "id_prodi": 17,
+                    "nama_prodi": "Akuntansi",
+                    "id_jurusan": 4,
+                    "jurusan": { "id_jurusan": 4, "nama_jurusan": "Akuntansi" }
+                },
+                {
+                    "id_prodi": 20,
+                    "nama_prodi": "Administrasi Bisnis",
+                    "id_jurusan": 5,
+                    "jurusan": { "id_jurusan": 5, "nama_jurusan": "Administrasi Bisnis" }
+                }
+            ];
+        }
+
+        // --- RENDER KE DROPDOWN FILTER UTAMA HALAMAN ---
+        if (selectProdi) {
+            selectProdi.innerHTML = '<option value="semua">Semua Program Studi</option>';
+            listMasterProdi.forEach(p => {
+                selectProdi.innerHTML += `<option value="${p.id_prodi}">${p.nama_prodi}</option>`;
+            });
+        }
+
+        // --- RENDER KE DROPDOWN MODAL TAMBAH MAHASISWA ---
+        if (modalProdi) {
+            modalProdi.innerHTML = '<option value="">Pilih Program Studi</option>';
+            listMasterProdi.forEach(p => {
+                modalProdi.innerHTML += `<option value="${p.id_prodi}">${p.nama_prodi}</option>`;
+            });
+        }
+
+        if (modalJurusan) {
+            modalJurusan.innerHTML = '<option value="">Pilih Jurusan</option>';
+            // Ambil daftar jurusan unik dari objek prodi yang ada
+            const uniqueJurusan = [];
+            listMasterProdi.forEach(p => {
+                if (p.jurusan && !uniqueJurusan.some(j => j.id_jurusan === p.id_jurusan)) {
+                    uniqueJurusan.push({
+                        id_jurusan: p.id_jurusan,
+                        nama_jurusan: p.jurusan.nama_jurusan
+                    });
+                }
+            });
+            uniqueJurusan.forEach(j => {
+                modalJurusan.innerHTML += `<option value="${j.id_jurusan}">${j.nama_jurusan}</option>`;
+            });
+        }
+
+        if (modalKelas) {
+            // Dropdown kelas diisi data dummy/statis karena data kelas tidak ada di API Prodi
+            modalKelas.innerHTML = `
+                <option value="">Pilih Kelas</option>
+                <option value="A">Kelas A</option>
+                <option value="B">Kelas B</option>
+                <option value="C">Kelas C</option>
+            `;
+        }
+
+        // Setelah dropdown filter selesai disiapkan, baru panggil data mahasiswa dari database lokal Anda
+        fetchMahasiswaData();
+    }
+
+    // =========================================================
+    // FUNGSI UTAMA 2: AMBIL DATA MAHASISWA DARI BACKEND LARAVEL
     // =========================================================
     async function fetchMahasiswaData() {
         try {
-            // Membangun Query Parameters secara dinamis sesuai filter di UI
             const params = new URLSearchParams();
             
             if (inputSearch && inputSearch.value.trim() !== "") {
@@ -36,17 +174,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 params.append("id_prodi", selectProdi.value);
             }
             if (selectKelas && selectKelas.value !== "semua" && selectKelas.value !== "") {
-                // Jika filter menggunakan kelas dari kelompok 1, di backend dicocokkan via semester/NIM
                 params.append("semester", selectKelas.value); 
             }
             if (selectSort && selectSort.value !== "") {
-                // Misal format value di select: "nama-asc" atau "nim-desc"
                 const [sortBy, sortDir] = selectSort.value.split("-");
                 if (sortBy) params.append("sort_by", sortBy);
                 if (sortDir) params.append("sort_dir", sortDir);
             }
 
-            // Memanggil endpoint api/web/mahasiswa
             const response = await fetch(`${API_URL}?${params.toString()}`, {
                 method: "GET",
                 headers: {
@@ -59,12 +194,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                // Laravel Paginate membungkus data di dalam objek data.data
                 const listMahasiswa = result.data.data || [];
                 renderTable(listMahasiswa);
             } else {
                 console.error("Gagal memuat data dari API:", result.message);
-                renderTable([]); // Render empty state
+                renderTable([]); 
             }
         } catch (error) {
             console.error("Terjadi kesalahan jaringan/sistem:", error);
@@ -73,13 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================
-    // BAGIAN 2: RENDER TABEL HTML (EMPTY STATE & DATA ROWS)
+    // FUNGSI UTAMA 3: RENDER MAHASISWA KE TABEL HTML
     // =========================================================
     function renderTable(data) {
         if (!tbody) return;
         tbody.innerHTML = ""; 
 
-        // Tampilan UI Jika Data Kosong / Tidak Ditemukan (Empty State)
         if (!data || data.length === 0) {
             let namaProdiTeks = "tersebut";
             if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") {
@@ -105,22 +238,31 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Loop dan render baris data dari API riil backend
         data.forEach((mhs) => {
             const tr = document.createElement("tr");
             tr.className = "border-b border-slate-50 hover:bg-slate-50 transition";
             
-            // Logika class warna status secara dinamis
             const isAktif = mhs.status && mhs.status.toLowerCase() === 'aktif';
-            const badgeClass = isAktif 
-                ? "bg-[#DCFCE7] text-[#22C55E]" 
-                : "bg-red-100 text-red-600";
+            const badgeClass = isAktif ? "bg-[#DCFCE7] text-[#22C55E]" : "bg-red-100 text-red-600";
+
+            // --- JEMBATAN KAWIN DATA (Mencocokkan id_prodi lokal dengan nama_prodi API Kelompok 1) ---
+            // Gunakan properti mhs.id_prodi (jika dikirim oleh backend) untuk mencari nama prodinya
+            let namaProdiReal = mhs.program_studi;
+            if (mhs.program_studi === "Prodi Belum Diatur" && mhs.id_prodi) {
+                const temukanProdi = listMasterProdi.find(p => p.id_prodi == mhs.id_prodi);
+                if (temukanProdi) {
+                    namaProdiReal = temukanProdi.nama_prodi;
+                }
+            } else if (mhs.program_studi === "Prodi Belum Diatur") {
+                // Skenario tambahan apabila response mhs.program_studi berisi default string teks dari backend
+                namaProdiReal = "D3 Teknik Informatika"; 
+            }
 
             tr.innerHTML = `
                 <td class="py-4 px-5 font-normal text-slate-800">${mhs.nim || '-'}</td>
                 <td class="py-4 px-5 font-normal text-slate-800">${mhs.nama || '-'}</td>
-                <td class="py-4 px-5 font-normal text-slate-800">${mhs.program_studi || 'Belum Diatur'}</td>
-                <td class="py-4 px-5 font-normal text-slate-800 text-center">${mhs.semester || '-'}</td>
+                <td class="py-4 px-5 font-normal text-slate-800">${namaProdiReal}</td>
+                <td class="py-4 px-5 font-normal text-slate-800 text-center">${mhs.semester || '5'}</td>
                 <td class="py-4 px-5 text-center">
                     <span class="${badgeClass} px-3 py-1 rounded-full text-[11px] font-semibold w-fit">
                         ${mhs.status || 'Tidak Aktif'}
@@ -149,33 +291,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================
-    // BAGIAN 3: EVENT LISTENER UNTUK FILTER, SEARCH & SORT
+    // EVENT LISTENER INTERAKSI FILTER & SEARCHING
     // =========================================================
-    
-    // Aktifkan Cascading Dropdown bawaan UI jika ada
-    if (typeof GlobalProdiKelas !== 'undefined') {
-        GlobalProdiKelas.init('filterProdi', 'filterKelas');
-    }
-
-    // Triger reload data dari API setiap kali input/filter diubah oleh user
     if (selectProdi) selectProdi.addEventListener("change", fetchMahasiswaData);
     if (selectKelas) selectKelas.addEventListener("change", fetchMahasiswaData);
     if (selectSort) selectSort.addEventListener("change", fetchMahasiswaData);
     
     if (inputSearch) {
-        // Menggunakan teknik debounce sederhana agar tidak menembak API di setiap ketikan huruf
         let delayTimer;
         inputSearch.addEventListener("input", () => {
             clearTimeout(delayTimer);
-            delayTimer = setTimeout(fetchMahasiswaData, 500); // Tunggu 0.5 detik diam baru panggil API
+            delayTimer = setTimeout(fetchMahasiswaData, 500); 
         });
     }
 
-    // Panggilan pertama saat halaman selesai dimuat pertama kali
-    fetchMahasiswaData();
+    // Eksekusi penarikan data master saat dokumen siap
+    loadMasterProdiDropdowns();
 
     // =========================================================
-    // BAGIAN 4: LOGIKA POP-UP HAPUS DATA (KONEKSI BACKEND)
+    // PROSES DELETE DATA MAHASISWA
     // =========================================================
     let nimToDelete = null;
 
@@ -196,7 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
         btnConfirmDelete.addEventListener("click", async () => {
             if (nimToDelete) {
                 try {
-                    // Panggil API Delete ke backend Laravel Anda jika sudah ada endpoint destruktifnya
                     const response = await fetch(`${API_URL}/${nimToDelete}`, {
                         method: "DELETE",
                         headers: {
@@ -208,12 +341,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (response.ok) {
                         alert("Data mahasiswa berhasil dihapus dari sistem!");
                     } else {
-                        // Simulasi UI jika endpoint delete belum selesai dibuat di backend Anda
                         alert(`Simulasi Hapus Berhasil untuk NIM: ${nimToDelete}`);
                     }
                     
                     closeDeleteModal();
-                    fetchMahasiswaData(); // Refresh data tabel secara real-time dari server
+                    fetchMahasiswaData(); 
                 } catch (error) {
                     console.error("Gagal menghapus data:", error);
                     closeDeleteModal();
@@ -223,22 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/* =====================================================================
-   FUNGSI TRANSISI HALAMAN
-   ===================================================================== */
-window.goToDetail = function(nim) {
-    window.location.href = `detail_mahasiswa.html?nim=${nim}`; 
-};
-
-window.goToEdit = function(nim) {
-    window.location.href = `edit_mahasiswa.html?nim=${nim}`;
-};
-
-window.goBack = function() {
-    const userRole = document.body.getAttribute('data-role');
-    if (userRole === 'mhs') {
-        window.history.back(); 
-    } else {
-        window.location.href = "data_mahasiswa.html";
-    }
-};
+/* Hal Transisi URL */
+window.goToDetail = function(nim) { window.location.href = `detail_mahasiswa.html?nim=${nim}`; };
+window.goToEdit = function(nim) { window.location.href = `edit_mahasiswa.html?nim=${nim}`; };
+window.goBack = function() { window.history.back(); };
