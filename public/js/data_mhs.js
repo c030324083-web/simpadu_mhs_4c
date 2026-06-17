@@ -1,6 +1,6 @@
 /**
  * =========================================================================================
- * SIMPADU - Front-End UI Interactions (Riil API Integration dengan Master Prodi Kelompok 1)
+ * SIMPADU - Front-End UI Interactions (Riil API Integration)
  * File: data_mhs.js
  * =========================================================================================
  * PERBAIKAN: Menyesuaikan pembacaan JSON Response dari Backend Non-Paginate (Scrollable)
@@ -11,11 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
         lucide.createIcons();
     }
 
-    // URL Utama API Backend Laravel Anda dan API Eksternal Kelompok 1
     const API_URL = "/api/web/mahasiswa"; 
     const API_PRODI_KEL1 = "https://api-admin-4c.rifkiaja.my.id:9002/api/data-master/prodi";
 
-    // Ambil token bearer yang tersimpan saat login
     const BEARER_TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
 
     const tbody = document.getElementById("tableBody");
@@ -24,12 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectKelas = document.getElementById("filterKelas");
     const selectSort = document.getElementById("sortSelect");
 
-    // Element Selector di dalam Modal Tambah Mahasiswa (sesuai ID di HTML)
     const modalJurusan = document.getElementById("inputJurusan");
     const modalProdi = document.getElementById("inputProdi");
     const modalKelas = document.getElementById("inputKelas");
 
-    // Variable global penampung data master prodi
     let listMasterProdi = [];
 
     // ========================================================================
@@ -72,8 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    let currentPage = 1;
+
     // =========================================================
-    // FUNGSI UTAMA 1: MEMUAT MASTER PRODI & ISI DROPDOWN
+    // FUNGSI 1: LOAD DROPDOWN PRODI (KELOMPOK 1)
     // =========================================================
     async function loadMasterProdiDropdowns() {
         try {
@@ -87,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!response.ok) throw new Error(`HTTP Error status: ${response.status}`);
-
             const result = await response.json();
             
             if (result.success && Array.isArray(result.data)) {
@@ -98,107 +95,46 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.warn("Gagal mengambil API Prodi Kelompok 1. Mengaktifkan fallback lokal riil:", error);
             listMasterProdi = [
-                {
-                    "id_prodi": 1,
-                    "nama_prodi": "Teknik Sipil",
-                    "id_jurusan": 1,
-                    "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }
-                },
-                {
-                    "id_prodi": 2,
-                    "nama_prodi": "Teknik Pertambangan",
-                    "id_jurusan": 1,
-                    "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }
-                },
-                {
-                    "id_prodi": 3,
-                    "nama_prodi": "Teknik Bangunan Rawa",
-                    "id_jurusan": 1,
-                    "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }
-                },
-                {
-                    "id_prodi": 6,
-                    "nama_prodi": "Tata Operasi dan Pemeliharaan Prediktif Alat Berat",
-                    "id_jurusan": 2,
-                    "jurusan": { "id_jurusan": 2, "nama_jurusan": "Teknik Mesin" }
-                },
-                {
-                    "id_prodi": 7,
-                    "nama_prodi": "Teknik Mesin",
-                    "id_jurusan": 2,
-                    "jurusan": { "id_jurusan": 2, "nama_jurusan": "Teknik Mesin" }
-                },
-                {
-                    "id_prodi": 12,
-                    "nama_prodi": "Teknik Informatika",
-                    "id_jurusan": 3,
-                    "jurusan": { "id_jurusan": 3, "nama_jurusan": "Teknik Elektro" }
-                },
-                {
-                    "id_prodi": 16,
-                    "nama_prodi": "Sistem Informasi",
-                    "id_jurusan": 3,
-                    "jurusan": { "id_jurusan": 3, "nama_jurusan": "Teknik Elektro" }
-                },
-                {
-                    "id_prodi": 17,
-                    "nama_prodi": "Akuntansi",
-                    "id_jurusan": 4,
-                    "jurusan": { "id_jurusan": 4, "nama_jurusan": "Akuntansi" }
-                },
-                {
-                    "id_prodi": 20,
-                    "nama_prodi": "Administrasi Bisnis",
-                    "id_jurusan": 5,
-                    "jurusan": { "id_jurusan": 5, "nama_jurusan": "Administrasi Bisnis" }
-                }
+                { "id_prodi": 1, "nama_prodi": "Teknik Sipil", "id_jurusan": 1, "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }},
+                { "id_prodi": 2, "nama_prodi": "Teknik Pertambangan", "id_jurusan": 1, "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }},
+                { "id_prodi": 3, "nama_prodi": "Teknik Bangunan Rawa", "id_jurusan": 1, "jurusan": { "id_jurusan": 1, "nama_jurusan": "Teknik Sipil dan Kebumian" }},
+                { "id_prodi": 6, "nama_prodi": "Tata Operasi dan Pemeliharaan Prediktif Alat Berat", "id_jurusan": 2, "jurusan": { "id_jurusan": 2, "nama_jurusan": "Teknik Mesin" }},
+                { "id_prodi": 7, "nama_prodi": "Teknik Mesin", "id_jurusan": 2, "jurusan": { "id_jurusan": 2, "nama_jurusan": "Teknik Mesin" }},
+                { "id_prodi": 12, "nama_prodi": "Teknik Informatika", "id_jurusan": 3, "jurusan": { "id_jurusan": 3, "nama_jurusan": "Teknik Elektro" }},
+                { "id_prodi": 16, "nama_prodi": "Sistem Informasi", "id_jurusan": 3, "jurusan": { "id_jurusan": 3, "nama_jurusan": "Teknik Elektro" }},
+                { "id_prodi": 17, "nama_prodi": "Akuntansi", "id_jurusan": 4, "jurusan": { "id_jurusan": 4, "nama_jurusan": "Akuntansi" }},
+                { "id_prodi": 20, "nama_prodi": "Administrasi Bisnis", "id_jurusan": 5, "jurusan": { "id_jurusan": 5, "nama_jurusan": "Administrasi Bisnis" }}
             ];
         }
 
         if (selectProdi) {
             selectProdi.innerHTML = '<option value="semua">Semua Program Studi</option>';
-            listMasterProdi.forEach(p => {
-                selectProdi.innerHTML += `<option value="${p.id_prodi}">${p.nama_prodi}</option>`;
-            });
+            listMasterProdi.forEach(p => selectProdi.innerHTML += `<option value="${p.id_prodi}">${p.nama_prodi}</option>`);
         }
 
         if (modalProdi) {
             modalProdi.innerHTML = '<option value="">Pilih Program Studi</option>';
-            listMasterProdi.forEach(p => {
-                modalProdi.innerHTML += `<option value="${p.id_prodi}">${p.nama_prodi}</option>`;
-            });
+            listMasterProdi.forEach(p => modalProdi.innerHTML += `<option value="${p.id_prodi}">${p.nama_prodi}</option>`);
         }
-
         if (modalJurusan) {
             modalJurusan.innerHTML = '<option value="">Pilih Jurusan</option>';
             const uniqueJurusan = [];
             listMasterProdi.forEach(p => {
                 if (p.jurusan && !uniqueJurusan.some(j => j.id_jurusan === p.id_jurusan)) {
-                    uniqueJurusan.push({
-                        id_jurusan: p.id_jurusan,
-                        nama_jurusan: p.jurusan.nama_jurusan
-                    });
+                    uniqueJurusan.push({ id_jurusan: p.id_jurusan, nama_jurusan: p.jurusan.nama_jurusan });
                 }
             });
-            uniqueJurusan.forEach(j => {
-                modalJurusan.innerHTML += `<option value="${j.id_jurusan}">${j.nama_jurusan}</option>`;
-            });
+            uniqueJurusan.forEach(j => modalJurusan.innerHTML += `<option value="${j.id_jurusan}">${j.nama_jurusan}</option>`);
         }
-
         if (modalKelas) {
-            modalKelas.innerHTML = `
-                <option value="">Pilih Kelas</option>
-                <option value="A">Kelas A</option>
-                <option value="B">Kelas B</option>
-                <option value="C">Kelas C</option>
-            `;
+            modalKelas.innerHTML = `<option value="">Pilih Kelas</option><option value="A">Kelas A</option><option value="B">Kelas B</option><option value="C">Kelas C</option>`;
         }
 
         fetchMahasiswaData();
     }
 
     // =========================================================
-    // FUNGSI UTAMA 2: AMBIL DATA MAHASISWA DARI BACKEND LARAVEL
+    // FUNGSI 2: FETCH MAHASISWA API LARAVEL
     // =========================================================
     async function fetchMahasiswaData() {
         try {
@@ -216,6 +152,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 params.append("semester", selectKelas.value); 
             }
             
+            params.append("page", currentPage);
+            
+            if (inputSearch && inputSearch.value.trim() !== "") params.append("search", inputSearch.value.trim());
+            if (selectProdi && selectProdi.value !== "semua" && selectProdi.value !== "") params.append("id_prodi", selectProdi.value);
+            if (selectKelas && selectKelas.value !== "semua" && selectKelas.value !== "") params.append("semester", selectKelas.value); 
             if (selectSort && selectSort.value !== "") {
                 const [sortBy, sortDir] = selectSort.value.split("-");
                 if (sortBy) params.append("sort_by", sortBy);
@@ -246,14 +187,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     listMahasiswa = Object.values(result.data); // Konversi ke array jika berupa objek ber-key
                 }
 
+                const listMahasiswa = Array.isArray(result.data) ? result.data : (result.data.data || []);
                 renderTable(listMahasiswa);
+                renderPagination(result.data || {}); 
             } else {
                 console.error("Gagal memuat data dari API:", result.message);
                 renderTable([]); 
+                renderPagination({});
             }
         } catch (error) {
             console.error("Terjadi kesalahan jaringan/sistem:", error);
             renderTable([]);
+            renderPagination({});
         }
     }
 
@@ -269,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================
-    // FUNGSI UTAMA 3: RENDER MAHASISWA KE TABEL HTML
+    // FUNGSI 3: RENDER TABEL (Murni CSS Asli)
     // =========================================================
     function renderTable(data) {
         if (!tbody) return;
@@ -305,16 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
             tr.className = "border-b border-slate-50 hover:bg-slate-50 transition";
             
             const isAktif = mhs.status && mhs.status.toLowerCase() === 'aktif';
-            const badgeClass = isAktif ? "bg-[#DCFCE7] text-[#22C55E]" : "bg-red-100 text-red-600";
+            const badgeClass = isAktif ? "bg-[#DCFCE7] text-[#16A34A]" : "bg-red-100 text-red-600";
 
             let namaProdiReal = mhs.program_studi;
             const foreignKeyProdi = mhs.id_prodi || mhs.ID_PRODI;
 
             if (mhs.program_studi === "Prodi Belum Diatur" && foreignKeyProdi) {
                 const temukanProdi = listMasterProdi.find(p => p.id_prodi == foreignKeyProdi);
-                if (temukanProdi) {
-                    namaProdiReal = temukanProdi.nama_prodi;
-                }
+                if (temukanProdi) namaProdiReal = temukanProdi.nama_prodi;
             } else if (mhs.program_studi === "Prodi Belum Diatur") {
                 namaProdiReal = "Teknik Informatika"; 
             }
@@ -346,43 +289,96 @@ document.addEventListener("DOMContentLoaded", () => {
             tbody.appendChild(tr);
         });
 
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     // =========================================================
-    // EVENT LISTENER INTERAKSI FILTER & SEARCHING
+    // FUNGSI 4: RENDER PAGINATION
     // =========================================================
-    if (selectProdi) selectProdi.addEventListener("change", fetchMahasiswaData);
-    if (selectKelas) selectKelas.addEventListener("change", fetchMahasiswaData);
-    if (selectSort) selectSort.addEventListener("change", fetchMahasiswaData);
+    function renderPagination(metaData) {
+        const container = document.getElementById("paginationContainer");
+        const pageInfo = document.getElementById("pageInfo");
+        const pageButtons = document.getElementById("pageButtons");
+
+        if (!metaData || !metaData.total || metaData.total === 0) {
+            if(container) container.classList.add("hidden");
+            return;
+        }
+
+        if(container) container.classList.remove("hidden");
+        
+        const from = metaData.from || 0;
+        const to = metaData.to || 0;
+        const total = metaData.total || 0;
+        if(pageInfo) pageInfo.innerHTML = `Menampilkan <span class="font-semibold text-slate-800">${from} - ${to}</span> dari <strong class="text-slate-800">${total}</strong> data`;
+
+        let buttonsHTML = "";
+
+        if (metaData.current_page > 1) {
+            buttonsHTML += `<button onclick="window.changePage(${metaData.current_page - 1})" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition cursor-pointer">Sebelumnya</button>`;
+        } else {
+            buttonsHTML += `<button disabled class="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-400 bg-slate-50 cursor-not-allowed">Sebelumnya</button>`;
+        }
+
+        buttonsHTML += `<span class="px-4 py-1.5 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg">${metaData.current_page}</span>`;
+
+        if (metaData.current_page < metaData.last_page) {
+            buttonsHTML += `<button onclick="window.changePage(${metaData.current_page + 1})" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition cursor-pointer">Selanjutnya</button>`;
+        } else {
+            buttonsHTML += `<button disabled class="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-400 bg-slate-50 cursor-not-allowed">Selanjutnya</button>`;
+        }
+
+        if(pageButtons) pageButtons.innerHTML = buttonsHTML;
+    }
+
+    window.changePage = function(pageNumber) {
+        currentPage = pageNumber;
+        fetchMahasiswaData();
+    };
+
+    function resetAndFetch() {
+        currentPage = 1;
+        fetchMahasiswaData();
+    }
+
+    // =========================================================
+    // EVENT LISTENER INTERAKSI UI
+    // =========================================================
+    if (selectProdi) selectProdi.addEventListener("change", resetAndFetch);
+    if (selectKelas) selectKelas.addEventListener("change", resetAndFetch);
+    if (selectSort) selectSort.addEventListener("change", resetAndFetch);
     
     if (inputSearch) {
         let delayTimer;
         inputSearch.addEventListener("input", () => {
             clearTimeout(delayTimer);
-            delayTimer = setTimeout(fetchMahasiswaData, 500); 
+            delayTimer = setTimeout(resetAndFetch, 500); 
         });
     }
 
     loadMasterProdiDropdowns();
 
     // =========================================================
-    // PROSES DELETE DATA MAHASISWA
+    // PROSES DELETE DATA MODAL
     // =========================================================
     let nimToDelete = null;
 
     window.openDeleteModal = function(nim) {
         nimToDelete = nim;
         const modal = document.getElementById("deleteModal");
-        if (modal) modal.classList.add("active");
+        if (modal) {
+            modal.classList.remove("hidden");
+            modal.classList.add("flex", "active"); // Menyertakan .active
+        }
     };
 
     window.closeDeleteModal = function() {
         nimToDelete = null;
         const modal = document.getElementById("deleteModal");
-        if (modal) modal.classList.remove("active");
+        if (modal) {
+            modal.classList.remove("flex", "active"); // Menghapus .active
+            modal.classList.add("hidden");
+        }
     };
 
     const btnConfirmDelete = document.getElementById("btnConfirmDelete");
@@ -404,11 +400,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         alert(`Simulasi Hapus Berhasil untuk NIM: ${nimToDelete}`);
                     }
                     
-                    closeDeleteModal();
+                    window.closeDeleteModal();
                     fetchMahasiswaData(); 
                 } catch (error) {
                     console.error("Gagal menghapus data:", error);
-                    closeDeleteModal();
+                    window.closeDeleteModal();
                 }
             }
         });
